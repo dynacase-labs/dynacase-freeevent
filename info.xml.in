@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<module name="freedom-freeevent" version="@VERSION@" release="@RELEASE@">
+  <description>Process temporal events for freedom families</description>
+  <requires>
+    <module name="freedom" />
+  </requires>
+</module>
