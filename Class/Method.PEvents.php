@@ -221,7 +221,7 @@ function getDefaultEvent($reset=false) {
 
   if ($__evtid == 0) {
     include_once("FDL/Lib.Dir.php");
-    $filter[]="evt_idinitiator=".$this->initid;
+    $filter[]="evt_idinitiator='".$this->initid."'";
     $filter[]="evt_transft='pEventDefault'";
     // search if already created
     $tevt = getChildDoc($this->dbaccess, 0 ,0,1, $filter,1, "TABLE",$this->eventFamily);
