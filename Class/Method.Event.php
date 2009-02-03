@@ -62,7 +62,7 @@ function XmlResume() {
   $style = $this->displayStyles();
   $this->lay->setBlockData("style", $style);
   
-  $this->lay->set("content", utf8_encode($this->viewdoc($this->XmlHtmlContent)));
+  $this->lay->set("content", $this->viewdoc($this->XmlHtmlContent));
   
   
   $this->lay->set("menuref", $this->fromid);
