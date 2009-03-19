@@ -11,7 +11,7 @@
  */
 public $eviews=array("FREEEVENT:EDITCALENDAR");
 public $cviews=array("FREEEVENT:PLANNER","FREEEVENT:VIEWCALENDAR");
-public $defaultedit="FREEEVENT:EDITCALENDAR";
+//public $defaultedit="FREEEVENT:EDITCALENDAR";
 public $defaultview="FREEEVENT:PLANNER";
 
 public $xmlview="FREEEVENT:XMLEVLIST";

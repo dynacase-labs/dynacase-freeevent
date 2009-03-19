@@ -14,6 +14,7 @@ var $calVResume     = "FREEEVENT:CALVRESUME";
 var $calVCard       = "FREEEVENT:CALVCARD";
 var $calVLongText   = "FREEEVENT:CALVLONGTEXT";
 var $calVShortText  = "FREEEVENT:CALVSHORTTEXT";
+var $calVData       = "FREEEVENT:CALVDATA";
 
 var $calPopupMenu = array();
 
@@ -101,4 +102,53 @@ function setMenuRef() {
   return array();
 }
 
+function getBgColor() {
+  return "#e0e0e0";
+}
+function getFgColor() {
+  return "";
+}
+function getBottomColor() {
+  return $this->getBgColor();
+}
+function getTopColor() {
+  return $this->getBgColor();
+}
+function getLeftColor() {
+  return $this->getBgColor();
+}
+function getRightColor() {
+  return $this->getBgColor();
+}
+function getIconSize() {
+  return getParam('SIZE_IMG-XX-SMALL','10px');
+}
+function calvdata() {
+  $this->lay->set("ID", $this->id);
+  $this->lay->set("FROMID", $this->fromid);
+  $this->lay->set("EVT_IDINITIATOR", $this->getValue("evt_idinitiator",$this->id));
+  $this->lay->set("EVT_FROMINITIATORID", $this->getValue("evt_frominitiatorid",$this->fromid));
+
+  $this->lay->set("displayable", ($this->isConfidential()?"false":"true"));
+  $this->lay->set("title", addSlashes($this->getTitle()));
+  $this->lay->set("start", FrenchDateToUnixTs($this->getValue("evt_begdate"),true));
+  $this->lay->set("lstart", $this->getValue("evt_begdate"));
+  $this->lay->set("lend", $this->getValue("evt_enddate"));
+  $this->lay->set("end", FrenchDateToUnixTs($this->getValue("evt_enddate"),true));
+  $this->lay->set("alarm", "''");
+  
+  if (method_exists($this, "getMenuLoadUrl")) $this->lay->set("menuurl", $this->getMenuLoadUrl());
+  else  $this->lay->set("menuurl", "");
+
+  $this->lay->set("icons", "'".$this->getIcon($this->getValue("evt_icon"))."'");
+  $this->lay->set("bgColor", $this->getBgColor());
+  $this->lay->set("fgColor", $this->getFgColor());
+  $this->lay->set("topColor",$this->getTopColor() );
+  $this->lay->set("bottomColor", $this->getBottomColor());
+  $this->lay->set("rightColor", $this->getRightColor());
+  $this->lay->set("leftColor", $this->getLeftColor());
+  $this->lay->set("iconSize", $this->getIconSize());
+  $this->lay->set("fastedit", "false");
+  $this->lay->set("editable", ($this->canEdit()==""?"true":"false"));
+}
 ?>
