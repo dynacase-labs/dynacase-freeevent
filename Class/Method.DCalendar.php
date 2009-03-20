@@ -11,7 +11,7 @@
  */
 public $eviews=array("FREEEVENT:EDITCALENDAR");
 public $cviews=array("FREEEVENT:PLANNER","FREEEVENT:VIEWCALENDAR");
-//public $defaultedit="FREEEVENT:EDITCALENDAR";
+public $defaultedit="FREEEVENT:EDITCALENDAR";
 public $defaultview="FREEEVENT:PLANNER";
 
 public $xmlview="FREEEVENT:XMLEVLIST";
@@ -59,6 +59,8 @@ function viewcalendar($target="_self",$ulink=true,$abstract=false) {
 function editcalendar($target="_self",$ulink=true,$abstract=false) {
     $this->editattr();
     $this->viewprop($target,$ulink,$abstract);
+    $oa=$this->getAttribute("se_famid");
+    $this->lay->set("viewcriteria",($oa != false));
 }
 
 /**
