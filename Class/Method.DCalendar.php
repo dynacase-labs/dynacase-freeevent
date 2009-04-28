@@ -59,6 +59,8 @@ function viewcalendar($target="_self",$ulink=true,$abstract=false) {
 function editcalendar($target="_self",$ulink=true,$abstract=false) {
     $this->editattr();
     $this->viewprop($target,$ulink,$abstract);
+    $oa=$this->getAttribute("se_famid");
+    $this->lay->set("viewcriteria",($oa != false));
 }
 
 /**
@@ -286,9 +288,7 @@ function cmpevt($a, $b, $k1="absx",$k2="absw",$r11=-1,$r12=1,$r21=-1,$r22=1) {
    }
    return (($a[$k1]) < ($b[$k1])) ? $r11 : $r12;
 }
-  function isStaticSql() {
-    return false;
-  }
+  
 function ComputeQuery($keyword="",$famid=-1,$latest="yes",$sensitive=false,$dirid=-1, $subfolder=true) {
   if ($dirid > 0) {
 

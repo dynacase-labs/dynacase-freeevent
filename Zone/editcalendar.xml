@@ -1,12 +1,13 @@
 <table width="100%" cellspacing="0">
 <tr><td width="45%">
+[IF viewcriteria]
 <fieldset><legend>[TEXT:Criteria]</legend>
 <table width="100%"><tr><td title="[L_DCAL_TEXT]">[V_DCAL_TEXTOP]</td>
 <td colspan="3">[V_DCAL_TEXT]</td></tr>
 <tr><td title="[L_SE_FAM]">[V_SE_FAM][V_SE_FAMID]</td>
     <td>[V_DCAL_IDPRODUCER][V_DCAL_PRODUCER]</td></tr>
 </table>
-</fieldset><table  width="100%" cellspacing="0">
+</fieldset>[ENDIF viewcriteria]<table  width="100%" cellspacing="0">
 [ZONE FDL:EDITFRAME?frameid=DCAL_FR_PRESENT]
 </table>
 <input type="button" value="[TEXT:planner]" onClick="preview('[CORE_STANDURL]&app=FREEDOM&action=FREEDOM_PREVIEW&dochead=N&vid=PLANNER')">
