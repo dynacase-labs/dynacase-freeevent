@@ -244,8 +244,10 @@ function planner($target="finfo",$ulink=true,$abstract="Y") {
     if ($kdesc2=="DESC") {$r21=1;$r22=-1;}
     else {$r21=-1;$r22=1;}
     $cname=get_class($this);
-    $sortfunc = create_function('$a,$b', 'return '.$cname.'::cmpevt($a,$b,"'.$k1.'","'.$k2.'","'.$r11.'","'.$r12.'","'.$r21.'","'.$r22.'");');
-    uasort($RN,"$sortfunc");
+    if (! getHttpVars("orderby")) {
+      $sortfunc = create_function('$a,$b', 'return '.$cname.'::cmpevt($a,$b,"'.$k1.'","'.$k2.'","'.$r11.'","'.$r12.'","'.$r21.'","'.$r22.'");');
+      uasort($RN,"$sortfunc");
+    }
     
     $y=0;
     foreach ($RN as $k=>$v) {        
@@ -299,7 +301,8 @@ function ComputeQuery($keyword="",$famid=-1,$latest="yes",$sensitive=false,$diri
 
 
   $filters=$this->getSqlGeneralFilters($keyword,$latest,$sensitive);
-
+  $specialorder=getHttpVars("orderby");
+  if ($specialorder) $this->setValue("se_orderby",$specialorder);
   $cond=$this->getSqlDetailFilter();
   if ($cond === false) return array(false);
 
