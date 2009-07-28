@@ -229,9 +229,26 @@ function planner($target="finfo",$ulink=true,$abstract="Y") {
   }
   if (count($tres) > 0) {
   $dcol=360/count($colorredid);
-  foreach ($colorredid as $k=>$v) {        
-    $col[$k]=HSL2RGB($colorredid[$k]*$dcol,1,$dlum);
+ 
+  $plancolor=$action->read("plancolor");
+  $deltacolor=0;
+  if (is_array($plancolor)) {
+    // detect new colors to set
+    $diff=array_diff(array_keys($colorredid),array_keys($plancolor));
+    $deltacolor=count($plancolor);
+    $idc=0;
+    foreach ($plancolor as $k=>$v) { // recompute color in case of luminance change
+      $plancolor[$k]=HSL2RGB($this->getColorAngle($idc++)*360,1,$dlum);
+    }
+  } else {
+    $diff=array_keys($colorredid);
   }
+  
+  $col=$plancolor;
+  foreach ($diff as $k=>$v) {        
+    $col[$v]=HSL2RGB($this->getColorAngle($k+$deltacolor)*360,1,$dlum);
+  }
+  $action->register("plancolor",$col);
 
   if ($byres) {
     foreach ($RN as $k=>$v) {        
@@ -256,7 +273,6 @@ function planner($target="finfo",$ulink=true,$abstract="Y") {
     }
   }
 
-
   $this->lay->setBlockData("RES",$tres);
   $this->lay->setBlockData("BAR",$RN);
 
@@ -278,6 +294,19 @@ function planner($target="finfo",$ulink=true,$abstract="Y") {
   //  print "<HR>". print " - <B>".microtime_diff(microtime(),$mb)."</B>";
   // print "<hr>";
 
+}
+
+
+/**
+ * return angle of color 0..2Pi => 0..1
+ * for a color number range compute the next color in color circle
+ */
+function getColorAngle($x) {
+  if ($x<=0) return 0;
+  $p=floor(log($x,2));
+  $n=pow(2,$p-1);
+  $da=1/(2*$n)+($x - 2*$n)/$n;
+  return$da/2;
 }
 
 function cmpevt($a, $b, $k1="absx",$k2="absw",$r11=-1,$r12=1,$r21=-1,$r22=1) {
