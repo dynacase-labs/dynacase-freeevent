@@ -117,11 +117,11 @@ function planner($target="finfo",$ulink=true,$abstract="Y") {
   if (!$wstart) {
     $isoperiode=getHttpVars("isoperiod",strftime("%Y-%m",time())); 
     if ($isoperiode) {
-      if (ereg("([0-9]+)-([0-9]+)",$isoperiode,$reg)) {
+      if (preg_match("/([0-9]+)-([0-9]+)/",$isoperiode,$reg)) {
 	// month period
 	$wstart=FrenchDateToJD(sprintf("01/%02d/%04d",$reg[2],$reg[1]));
 	$wend=FrenchDateToJD(sprintf("01/%02d/%04d",$reg[2]+1,$reg[1]));
-      } elseif (ereg("([0-9]+)",$isoperiode,$reg)) {
+      } elseif (preg_match("/([0-9]+)/",$isoperiode,$reg)) {
 	// year period
 	$wstart=FrenchDateToJD(sprintf("01/01/%04d",$reg[1]));
 	$wend=FrenchDateToJD(sprintf("01/01/%04d",$reg[1]+1));
