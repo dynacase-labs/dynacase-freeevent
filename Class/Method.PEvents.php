@@ -4,7 +4,7 @@
  *
  * @author Anakeen 2005
  * @version $Id: Method.PEvents.php,v 1.19 2007/01/05 10:42:19 eric Exp $
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEEVENT
  */
  /**

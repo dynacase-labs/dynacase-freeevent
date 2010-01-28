@@ -4,7 +4,7 @@
  *
  * @author Anakeen 2000
  * @version $Id: calvlongtext.php,v 1.1 2005/03/18 09:21:38 marc Exp $
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEDOM
  * @subpackage
  */

@@ -5,7 +5,7 @@
  *
  * @author Anakeen 2000
  * @version $Id: calvresume.php,v 1.2 2005/09/21 08:43:06 marc Exp $
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEDOM
  * @subpackage
  */

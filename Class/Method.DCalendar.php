@@ -4,7 +4,7 @@
  *
  * @author Anakeen 2005
  * @version $Id: Method.DCalendar.php,v 1.37 2007/02/21 11:11:53 eric Exp $
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEEVENT
  */
  /**

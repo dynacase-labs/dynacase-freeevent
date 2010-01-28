@@ -1,3 +1,9 @@
+
+/**
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ */
+
 var mstart=0;
 var mend=0;
 var mdelta=mend-mstart;
