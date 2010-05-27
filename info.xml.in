@@ -3,7 +3,6 @@
   <description>Process temporal events for freedom families</description>
 
   <requires>
-    <module name="freedom" />
   </requires>
 
   <post-install>
