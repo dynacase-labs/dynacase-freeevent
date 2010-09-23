@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<module name="dynacase-freeevent" version="@VERSION@" release="@RELEASE@">
+<module name="dynacase-freeevent" version="@VERSION@" release="@RELEASE@" license="@LICENSE@">
   <description>Process temporal events for dynacase families</description>
 
   <replaces>
