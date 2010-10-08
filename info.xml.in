@@ -1,8 +1,13 @@
 <?xml version="1.0"?>
-<module name="freedom-freeevent" version="@VERSION@" release="@RELEASE@">
-  <description>Process temporal events for freedom families</description>
+<module name="dynacase-freeevent" version="@VERSION@" release="@RELEASE@" license="@LICENSE@">
+  <description>Process temporal events for dynacase families</description>
+
+  <replaces>
+        <module name="freedom-freeevent" />
+  </replaces>
 
   <requires>
+    <module name="dynacase-platform" />
   </requires>
 
   <post-install>
