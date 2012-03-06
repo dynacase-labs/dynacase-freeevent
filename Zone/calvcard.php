@@ -1,41 +1,38 @@
 <?php
-
-/**
+/*
  * Generated Header (not documented yet)
  *
- * @author Anakeen 2000
- * @version $Id: calvcard.php,v 1.2 2005/09/21 08:43:06 marc Exp $
+ * @author Anakeen
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
- * @package FREEDOM
- * @subpackage
- */
- /**
- */
-function calvcard(&$action) {
-  include_once("FREEEVENT/calvresume.php");
-  $dbaccess = $action->GetParam("FREEDOM_DB");
-  $evi = GetHttpVars("ev", -1);
-  setHttpVar("ev", $evi);
-  calvresume($action);
+ * @package FREEEVENT
+*/
 
-  $ev = new_Doc($dbaccess, $evi);
-
-  $action->lay->set("id", $ev->id);
-  $action->lay->set("description", $ev->getValue("evt_descr"));
-  $tress = array();
-  $to = array(); $ito=0;
-  if ($ev->getValue("evt_idres") != "") {
-    $tress = $ev->getTValue("evt_idres");
-    foreach ($tress as $k => $v) {
-      $rd = new_Doc($dbaccess, $v);
-      $to[$ito++]["rtitle"] = $rd->title;
+function calvcard(&$action)
+{
+    include_once ("FREEEVENT/calvresume.php");
+    $dbaccess = $action->GetParam("FREEDOM_DB");
+    $evi = GetHttpVars("ev", -1);
+    setHttpVar("ev", $evi);
+    calvresume($action);
+    
+    $ev = new_Doc($dbaccess, $evi);
+    
+    $action->lay->set("id", $ev->id);
+    $action->lay->set("description", $ev->getValue("evt_descr"));
+    $tress = array();
+    $to = array();
+    $ito = 0;
+    if ($ev->getValue("evt_idres") != "") {
+        $tress = $ev->getTValue("evt_idres");
+        foreach ($tress as $k => $v) {
+            $rd = new_Doc($dbaccess, $v);
+            $to[$ito++]["rtitle"] = $rd->title;
+        }
     }
-  }
-  $action->lay->set("sdatehour", $ev->getValue("evt_begdate"));
-  $action->lay->set("edatehour", $ev->getValue("evt_enddate"));
-  $action->lay->set("RESSOURCES", count($to)>0 );
-  $action->lay->setBlockData("RESSLIST", $to);
-  return;
+    $action->lay->set("sdatehour", $ev->getValue("evt_begdate"));
+    $action->lay->set("edatehour", $ev->getValue("evt_enddate"));
+    $action->lay->set("RESSOURCES", count($to) > 0);
+    $action->lay->setBlockData("RESSLIST", $to);
+    return;
 }
-
 ?>

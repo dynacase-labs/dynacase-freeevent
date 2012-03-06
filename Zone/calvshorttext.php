@@ -1,20 +1,16 @@
 <?php
-/**
- * Generated Header (not documented yet)
- *
- * @author Anakeen 2000
- * @version $Id: calvshorttext.php,v 1.1 2005/03/18 09:21:38 marc Exp $
+/*
+ * @author Anakeen
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
- * @package FREEDOM
- * @subpackage
- */
- /**
- */
-function calvshorttext(&$action) {
-  include_once("FREEEVENT/calvresume.php");
-  $dbaccess = $action->GetParam("FREEDOM_DB");
-  $evi = GetHttpVars("ev", -1);
-  setHttpVar("ev", $evi);
-  calvresume($action);
-  return;
+ * @package FREEEVENT
+*/
+
+function calvshorttext(&$action)
+{
+    include_once ("FREEEVENT/calvresume.php");
+    $dbaccess = $action->GetParam("FREEDOM_DB");
+    $evi = GetHttpVars("ev", -1);
+    setHttpVar("ev", $evi);
+    calvresume($action);
+    return;
 }
