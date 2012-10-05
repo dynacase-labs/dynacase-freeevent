@@ -54,14 +54,28 @@ class _CALENDAR extends _DSEARCH
         
         return $tevx;
     }
-    
+
+    /**
+     * Calendar view
+     * @param string $target window target name for hyperlink destination
+     * @param bool $ulink if false hyperlink are not generated
+     * @param bool $abstract if true only abstract attribute are generated
+     * @templateController
+     */
     function viewcalendar($target = "_self", $ulink = true, $abstract = false)
     {
         
         $this->viewprop($target, $ulink, $abstract);
         $this->viewdsearch($target, $ulink, $abstract);
     }
-    
+
+    /**
+     * Calendar edit view
+     * @param string $target window target name for hyperlink destination
+     * @param bool $ulink if false hyperlink are not generated
+     * @param bool $abstract if true only abstract attribute are generated
+     * @templateController
+     */
     function editcalendar($target = "_self", $ulink = true, $abstract = false)
     {
         $this->editattr();
@@ -74,6 +88,7 @@ class _CALENDAR extends _DSEARCH
      * @param string $target window target name for hyperlink destination
      * @param bool $ulink if false hyperlink are not generated
      * @param bool $abstract if true only abstract attribute are generated
+     * @templateController
      */
     function planner($target = "finfo", $ulink = true, $abstract = "Y")
     {
