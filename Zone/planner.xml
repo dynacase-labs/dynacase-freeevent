@@ -22,22 +22,22 @@ addEvent(window,"load",placeEvents);
 <button class="bnav" id="bnday" onclick="moveabscal(1)" title="[TEXT(freeevent):next day]">&gt;</button></div>
 
 <div id="binter" style="position:absolute;display:none;width:auto;">
-<table cellspacing=0 class="tinputs" >
-<tr><td><input onclick="allcal()" title="[TEXT(freeevent):Allperiod]"  type="image" src="[IMG:forback.gif]"></input></td>
-   <td><input onclick="isFixed=true;placeEvents();style.visibility='hidden'" type="image" src="[IMG:pins.gif]" title="[TEXT(freeevent):Fixbar]" ></input></td>   </tr>
-<tr><td><input id="nperiod" value="[dday100]" title="[TEXT(freeevent):Period in day]" type="text" size="2" ></input></td>
-   <td><input onclick="resizecal()" title="[TEXT(freeevent):Change day period]" type="image" src="[IMG:forward.gif]"></input></td></tr>
+<table cellspacing="0" class="tinputs" >
+<tr><td><input onclick="allcal()" title="[TEXT(freeevent):Allperiod]"  type="image" src="[IMG:forback.gif]"/></td>
+   <td><input onclick="isFixed=true;placeEvents();style.visibility='hidden'" type="image" src="[IMG:pins.gif]" title="[TEXT(freeevent):Fixbar]" /></td>   </tr>
+<tr><td><input id="nperiod" value="[dday100]" title="[TEXT(freeevent):Period in day]" type="text" size="2" /></td>
+   <td><input onclick="resizecal()" title="[TEXT(freeevent):Change day period]" type="image" src="[IMG:forward.gif]"/></td></tr>
 </table>
 </div>
 
-<div id="dday"  name="dday" style="display:none" onclick="viewcal(this.id)"  >XX</div>
+<div id="dday" class="calendar-period" name="dday" style="display:none" onclick="viewcal(this.id)"  >XX</div>
 
-<div id="dhour" name="dhour" title="HH" style="position:absolute;left:0px;top:0px;display:none;"><table class="rowright24" cellspacing=0 width="100%" cols="24"><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr></table></div>
-
-
+<div id="dhour" name="dhour" title="HH" style="position:absolute;left:0px;top:0px;display:none;"><table class="rowright24" cellspacing="0" width="100%" cols="24"><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr></table></div>
 
 
-<table id="tcalhead" width="100%" border="1" style="background-color:transparent">
+
+
+<table class="calendar-head" id="tcalhead" width="100%" >
 <thead>
 <tr><td  align="left">[begdate]</td>
 <td><button onclick="zoomx=zoomx*2;placeEvents();" title="[TEXT(freeevent):zoom x2]">&rarr;</button>
