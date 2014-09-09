@@ -101,7 +101,7 @@ trait Calendar {
             $this->lay->set("sapp", getHttpVars("sapp", "FDL"));
             $this->lay->set("sid", getHttpVars("sid", "id"));
             $this->lay->set("starget", getHttpVars("starget", "_self"));
-            $this->lay->set("stext", _("view planner"));
+            $this->lay->set("stext", ___("view planner","freeevent"));
             return;
         }
         $action->parent->AddJsRef("FDL:JDATE.JS", true);
@@ -223,8 +223,8 @@ trait Calendar {
                     "eid" => getv($v, "id") ,
                     "res" => $tresname[$ki],
                     "subtype" => getv($v, "evt_code") ,
-                    "divtitle" => ($titleinline) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : _("DATE ERROR")) . $v["title"]) : '',
-                    "divtitle2" => ($titleinleft) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : _("DATE ERROR")) . $v["title"]) : '',
+                    "divtitle" => ($titleinline) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : ___("DATE ERROR","freeevent")) . $v["title"]) : '',
+                    "divtitle2" => ($titleinleft) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : ___("DATE ERROR","freeevent")) . $v["title"]) : '',
                     "desc" => str_replace(array(
                         "\n",
                         "\r",

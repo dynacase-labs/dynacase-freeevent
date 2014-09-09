@@ -15,7 +15,7 @@
       method="POST" ENCTYPE="multipart/form-data"
       onsubmit="[BLOCK TRANSFERT]transfertValue('[idi]','[idp]');[ENDBLOCK TRANSFERT]"
       action="[CORE_STANDURL]&app=[sapp]&action=[saction]">
-<fieldset><legend>[TEXT:Parameters]</legend>
+<fieldset><legend>[TEXT(freeevent):Parameters]</legend>
 <input type="hidden" name="[sid]" value="[id]">
 [BLOCK PINPUTS]
 <input type="hidden" name="[idp]" id="[idp]" value="[value]">[ENDBLOCK PINPUTS]
@@ -26,7 +26,7 @@
    <tr ><td width="30%" class="FREEDOMlabel">[label] : </td><td>[inputs]</td></tr>[ENDBLOCK PARAM]
   </tbody>
 </table>
-<input class="noprint" type="submit" value="[TEXT:send search]">
+<input class="noprint" type="submit" value="[TEXT(freeevent):send search]">
 </fieldset>
 </form>
 [ENDBLOCK VPARAM3]

@@ -125,7 +125,7 @@ function placeDays() {
   pDJMonth=0;
   for (var i=0;i<nbday;i++) {
     dx=dw*i;
-    if (weekDay(mstart+i)=='[TEXT:Monday]') {
+    if (weekDay(mstart+i)=='[TEXT(freeevent):Monday]') {
       // begin week
       if ((dw*zoomx*7) > minw) { // mini 10 pixel
 	

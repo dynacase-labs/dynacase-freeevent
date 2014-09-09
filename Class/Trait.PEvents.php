@@ -80,12 +80,12 @@ trait EventProduct {
         $evt->disableEditControl();
         if ($evt->isAlive()) {
             if (($evt->getRawValue("evt_begdate") != $this->getEventBeginDate()) || ($evt->getRawValue("evt_enddate") != $this->getEventEndDate())) {
-                $evt->addHistoryEntry(sprintf(_("Change period from [%s %s] to [%s %s]") , $evt->getRawValue("evt_begdate") , $evt->getRawValue("evt_enddate") , $this->getEventBeginDate() , $this->getEventEndDate()));
+                $evt->addHistoryEntry(sprintf(___("Change period from [%s %s] to [%s %s]", "freeevent") , $evt->getRawValue("evt_begdate") , $evt->getRawValue("evt_enddate") , $this->getEventBeginDate() , $this->getEventEndDate()));
             } else {
                 /**
                  * @var \Doc|EventProduct $this
                  */
-                $evt->addHistoryEntry(sprintf(_("Changes from document \"%s\" [%d]") , $this->getTitle() , $this->id));
+                $evt->addHistoryEntry(sprintf(___("Changes from document \"%s\" [%d]", "freeevent") , $this->getTitle() , $this->id));
             }
         }
         $evt->setValue("evt_begdate", $this->getEventBeginDate());

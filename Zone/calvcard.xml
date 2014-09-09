@@ -7,7 +7,7 @@
 
 <tr><td colspan="2">[description]</td></tr>
 
-[IF RESSOURCES]<tr><td colspan="2">[TEXT:ressources]</td></tr>[ENDIF RESSOURCES]
+[IF RESSOURCES]<tr><td colspan="2">[TEXT(freeevent):ressources]</td></tr>[ENDIF RESSOURCES]
 [BLOCK RESSLIST]<tr><td></td><td>[rtitle]</td></tr>[ENDBLOCK RESSLIST]
 
 </table>

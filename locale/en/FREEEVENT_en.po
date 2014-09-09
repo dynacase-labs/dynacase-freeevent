@@ -1,0 +1,136 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Freeevent\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-09-09 12:00+0200\n"
+"PO-Revision-Date: 2014-09-09 13:19+0200\n"
+"Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
+"Language-Team: english-anakeen <distrib@anakeen.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgctxt "freeevent"
+msgid "Allperiod"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Change day period"
+msgstr ""
+
+#, php-format
+msgctxt "freeevent"
+msgid "Change period from [%s %s] to [%s %s]"
+msgstr ""
+
+#, php-format
+msgctxt "freeevent"
+msgid "Changes from document \"%s\" [%d]"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Criteria"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "DATE ERROR"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Fixbar"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Monday"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Parameters"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Period in day"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "Planner"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "all families events"
+msgstr ""
+
+msgid "event ressources"
+msgstr ""
+
+msgid "freeevent"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "next day"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "next month (30 days after)"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "next week"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "next year (365 days after)"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "previous day"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "previous month (30 days before)"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "previous week"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "previous year (365 days before)"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "ressources"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "send search"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "view planner"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "zoom /1.5"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "zoom /2"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "zoom 0"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "zoom x1.5"
+msgstr ""
+
+msgctxt "freeevent"
+msgid "zoom x2"
+msgstr ""

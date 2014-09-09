@@ -35,9 +35,9 @@ function getFamilyByTag($tag)
 function getEventProducers()
 {
     $trall[] = array(
-        _("all families events") ,
+        ___("all families events", "freeevent") ,
         " ",
-        _("all families events")
+        ___("all families events", "freeevent")
     );
     
     return array_merge($trall, getFamilyByTag("P"));
