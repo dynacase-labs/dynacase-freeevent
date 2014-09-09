@@ -7,59 +7,68 @@
  * @package FREEEVENT
 */
 
-function getEventProducers($dbaccess)
+function getFamilyByTag($tag)
 {
     
     $famid = - 1;
-    $filter[] = "atags ~ 'P'";
-    $tinter = getChildDoc($dbaccess, 0, 0, 100, $filter, $action->user->id, "TABLE", $famid);
     
-    $tr[] = array(
+    $s = new SearchDoc("", $famid);
+    $s->addFilter("atags ~ '\\\\y%s\\\\y'", $tag);
+    $s->setObjectReturn(true);
+    $s->search();
+    $dl = $s->getDocumentList();
+    $tr = array();
+    /**
+     * @var Doc $v
+     */
+    foreach ($dl as $v) {
+        
+        $tr[] = array(
+            $v->getHtmlTitle() ,
+            $v->id,
+            $v->getTitle()
+        );
+    }
+    return $tr;
+}
+
+function getEventProducers()
+{
+    $trall[] = array(
         _("all families events") ,
         " ",
         _("all families events")
     );
-    foreach ($tinter as $k => $v) {
-        
-        $tr[] = array(
-            $v["title"],
-            $v["id"],
-            $v["title"]
-        );
-    }
-    return $tr;
+    
+    return array_merge($trall, getFamilyByTag("P"));
 }
-function getFamRessource($dbaccess)
+function getFamRessource()
 {
-    
-    $famid = - 1;
-    $filter[] = "atags ~ 'R'";
-    $tinter = getChildDoc($dbaccess, 0, 0, 100, $filter, $action->user->id, "TABLE", $famid);
-    
-    foreach ($tinter as $k => $v) {
-        
-        $tr[] = array(
-            $v["title"],
-            $v["id"],
-            $v["title"]
-        );
-    }
-    return $tr;
+    return getFamilyByTag("R");
 }
 function getRessource($dbaccess, $famres, $name = "")
 {
-    $filter[] = "atags ~ 'R'";
+    $s = new SearchDoc("", $famres);
+    $s->addFilter("atags ~ '\\\\yR\\\\y'");
+    $s->setObjectReturn(true);
     if ($name != "") {
-        $filter[] = "title ~* '" . pg_escape_string($name) . "'";
+        
+        $s->addFilter("title ~* '%s'", $name);
     }
-    $tinter = getChildDoc($dbaccess, 0, 0, 100, $filter, $action->user->id, "TABLE", $famres);
+    $s->setSlice(100);
     
-    foreach ($tinter as $k => $v) {
+    $s->search();
+    $dl = $s->getDocumentList();
+    $tr = array();
+    /**
+     * @var Doc $v
+     */
+    foreach ($dl as $v) {
         
         $tr[] = array(
-            $v["title"],
-            $v["initid"],
-            $v["title"]
+            $v->getHtmlTitle() ,
+            $v->id,
+            $v->getTitle()
         );
     }
     return $tr;

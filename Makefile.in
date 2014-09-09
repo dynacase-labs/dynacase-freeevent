@@ -11,7 +11,7 @@ applib = FDL
 
 export pubdir utildir appname applib
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 
 export targetdir PACKAGE
@@ -34,7 +34,8 @@ $(pubdir)/EXTERNALS :
 	mkdir -p $@
 
 $(pubdir)/EXTERNALS/event.php: $(pubdir)/EXTERNALS 
-	cp $(appname)_external.php $(pubdir)/EXTERNALS/event.php
+	cd $(pubdir)/EXTERNALS; \
+	ln -s ../FREEEVENT/$(appname)_external.php event.php
 
 $(pubdir)/$(appname)/freeevent.ods : freeevent.ods 
 	cp freeevent.ods $(pubdir)/$(appname)

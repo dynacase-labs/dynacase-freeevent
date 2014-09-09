@@ -7,14 +7,15 @@
 <tr><td title="[L_SE_FAM]">[V_SE_FAM][V_SE_FAMID]</td>
     <td>[V_DCAL_IDPRODUCER][V_DCAL_PRODUCER]</td></tr>
 </table>
-</fieldset>[ENDIF viewcriteria]<table  width="100%" cellspacing="0">
+</fieldset>[ENDIF viewcriteria]
+    <table  width="100%" cellspacing="0">
 [ZONE FDL:EDITFRAME?frameid=DCAL_FR_PRESENT]
 </table>
 <input type="button" value="[TEXT:planner]" onClick="preview('[CORE_STANDURL]&app=FREEDOM&action=FREEDOM_PREVIEW&dochead=N&vid=PLANNER')">
-</td><td>
+</td><td>[IF viewcriteria]
 <table  width="100%" cellspacing="0">
 [ZONE FDL:EDITFRAME?frameid=DCAL_FR_RES]
-</table></td>
+</table>[ENDIF viewcriteria]</td>
 </tr>
 <tr><td colspan="2">
 <table width="100%" cellspacing="0">
