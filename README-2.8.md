@@ -1,9 +1,10 @@
-**FREEEVENT**
+**(OBSOLÈTE) FREEEVENT 2.8**
 
 
 
 
-# 1 -Introduction Le module FREEEVENT a pour objectif d'apporter un ensemble de
+# 1 -Introduction 
+Le module FREEEVENT a pour objectif d'apporter un ensemble de
 fonctionnalités à Dynacase pour représenter les documents en fonction de
 critères de temps.
 
@@ -83,7 +84,7 @@ UPDATE 2233
 
 </code>
 
-# 3 -Producteurs ======
+# 3 -Producteurs 
 
 Les familles productrices sont celles qui sont capable d'engendrer des
 événements. La déclaration d'une famille productrice doit contenir les éléments
@@ -176,17 +177,17 @@ plusieurs événements atomiques à partir d'un événement répétable.
 
 
     public function explodeEvt($d1,$d2) {
-
+      
       include_once("FDL/Lib.Util.php");
-
-
+      
+      
       $jdi1=($d1=="")?0:Iso8601ToJD($d1);
       $jdi2=StringDateToJD($this->getValue("evt_begdate"));
       $jd1=max($jdi1,$jdi2); // search begin date
       $jdi1=($d2=="")?5000000:Iso8601ToJD($d2);
       $jdi2=StringDateToJD($this->getValue("evt_enddate"));
       $jd2=min($jdi1,$jdi2);// search end date
-
+      
       $day=intval($this->getValue("DEVT_DAY")); // the day to repeat
       if (($day < 1) || ($day > 7)) {
         print "error day $day";
@@ -196,7 +197,7 @@ plusieurs événements atomiques à partir d'un événement répétable.
       $jd1+=($day-$djd1+7)%7; // search the first day
       $te=array();
       $te1=get_object_vars($this);
-
+      
       for ($i=$jd1;$i<$jd2;$i+=7) {
         $te[$i]=$te1;
         $te[$i]["evt_begdate"]=jd2cal($i); // change date period
@@ -246,26 +247,17 @@ Voici un exemple de production de répétable avec la famille « //menu journali
     public $eventAttEndDate="DAYM_ENDDATE";
     public $eventAttDesc="DAYM_DESC";
     public $eventFamily="DAYEVENT";
-
+    
     var $eventRessources=array("DAYM_IDUSER");
-
-
-
+    
     function getEventEndDate() {
       return substr($this->getValue($this->eventAttEndDate),0,10)." 23:59:59";
     }
-
-
     function setEventSpec(&amp;$e) { //mise à jour attribut de répétabilité
-
-    $e->setValue("DEVT_DAY", $this->getValue("DAYM_DAY"));
-
+        $e->setValue("DEVT_DAY", $this->getValue("DAYM_DAY"));
     }
-
     function postModify() {
-
-    $this->setEvent();
-
+        $this->setEvent();
     }
 </code>
 

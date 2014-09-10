@@ -1,9 +1,11 @@
-**FREEEVENT**
+**FREEEVENT 3.0**
 
 
 
 
-# 1 -Introduction Le module FREEEVENT a pour objectif d'apporter un ensemble de
+# 1 -Introduction 
+
+Le module FREEEVENT a pour objectif d'apporter un ensemble de
 fonctionnalités à Dynacase pour représenter les documents en fonction de
 critères de temps.
 
@@ -55,7 +57,7 @@ de transfert utilisé alors il est modifié.
 
 Les ressources peuvent être n'importe quel document marqué comme tel. Pour
 marquer un document comme ressource il suffit de lui assigner le marquage
-applicatif 'R' (propriétés //atags//). Ce marquage n'est pas modifiable par
+applicatif 'R' (propriétés `atags`). Ce marquage n'est pas modifiable par
 l'interface actuellement. Si une famille est marquée 'R', tous les documents
 produits auront le même marquage.
 
@@ -83,26 +85,35 @@ UPDATE 2233
 
 </code>
 
-# 3 -Producteurs ======
+# 3 -Producteurs 
 
 Les familles productrices sont celles qui sont capable d'engendrer des
-événements. La déclaration d'une famille productrice doit contenir les éléments
-suivants :
+événements. La déclaration d'une famille productrice doit utiliser le trait
+ **`\Dcp\Freeevent\EventProduct`** dans sa classe associée.
 
 | BEGIN  |                     | Demande de congés |     |     | ABSENCE |
 | ------ | ------------------- | ----------------- | --- | --- | ------- |
 | TAG    | P                   |                   |     |     |         |
-| METHOD | *Method.PEvents.php |                   |     |     |         |
-| METHOD | +Method.PEvtAbs.php |                   |     |     |         |
+| CLASS  | My\Absence          |                   |     |     |         |
 | END    |                     |                   |     |     |         |
 
-Ces familles doivent être marquées 'P' (comme productrice), ceci dans le but de pouvoir les rechercher suivant ce critère. Ces familles doivent hériter des méthodes de production d'événements. Par défaut, une seule fonction de production est disponible (pEventDefault). Cette fonction de production est appelée par la méthode ::setEvent(). Le fait d'hériter des méthodes de production ne permet pas la production directement.
+Ces familles doivent être marquées **`P`** (comme productrice), ceci dans le but
+de pouvoir les rechercher suivant ce critère. Ces familles doivent hériter des
+méthodes de production d'événements. Par défaut, une seule fonction de
+production est disponible (pEventDefault). Cette fonction de production est
+appelée par la méthode ::setEvent(). Le fait d'utiliser le trait
+`\Dcp\Freeevent\EventProduct` dans la classe de production ne permet pas la
+production directement.
 
-La famille productrice doit surcharger les méthodes pour remplir les attributs de l'événement et elle doit indiquer quand elle doit produire, modifier et supprimer cet événement (appel à ::setEvent(), ::deleteEvent() ).
+La famille productrice doit surcharger les méthodes pour remplir les attributs
+de l'événement et elle doit indiquer quand elle doit produire, modifier et
+supprimer cet événement (appel à ::setEvent(), ::deleteEvent() ).
 
-## 3.1.événement atomique =====
+## 3.1.Événement atomique 
 
-Si la famille productrice a des attributs qui correspondent directement à des attributs de l'événement, elle peut utiliser les attributs suivants pour indiquer la relation :
+Si la famille productrice a des attributs qui correspondent directement à des
+attributs de l'événement, elle peut utiliser les attributs suivants pour
+indiquer la relation :
 
   * $eventAttBeginDate : date de début
   * $eventAttEndDate : date de fin
@@ -131,29 +142,44 @@ Si certains attributs ne correspondent pas, la famille productrice doit alors re
        
 
 
-                                                                 
 
 
 
-Exemple Method.PEvtAbs.php :
-<code php>
-var $eventAttBeginDate="ABS_VDBEG";
-var $eventAttEndDate="ABS_VDEND";
-var $eventAttDesc="ABS_TYPE";
-var $eventAttCode="ABS_TYPE";
-var $eventRessources=array("ABS_IDDEMAND","ABS_IDVAL","ABS_IDDIR","ABS_IDRH");
 
+Exemple Class-Absence.php :
 
-function getEventEndDate() {
- return substr($this->getValue($this->eventAttEndDate),0,10)." 23:59:59";
+``` php
+namespace My;
+
+class Absence extends \Dcp\Family\Document
+{
+    use \Dcp\Freeevent\EventProduct;
+    
+    public function __construct($dbaccess = '', $id = '', $res = '', $dbid = 0)
+    {
+        parent::__construct($dbaccess, $id, $res, $dbid);
+        
+        $this->eventAttBeginDate = "ABS_BEGDATE";
+        $this->eventAttEndDate = "ABS_ENDDATE";
+        $this->eventAttDesc = "ABS_DESC";
+        $this->eventAttCode = "ABS_DESC";
+        $this->eventRessources = array(
+            "ABS_IDDEMAND","ABS_IDVAL","ABS_IDDIR","ABS_IDRH"
+        );
+    }
+    
+    public function getEventEndDate()
+    {
+        return substr($this->getRawValue($this->eventAttEndDate) , 0, 10) . " 23:59:59";
+    }
+  
+    public function postStore()
+    {
+        $this->setEvent();
+    }
 }
+```
 
-
-function postModify() {
-  $err=$this->setEvent(); //modification de l'événement à chaque modification du producteur
-}
-
-</code>
 
 ## 3.2.Événement répétable 
 
@@ -161,51 +187,54 @@ Si une famille productrice doit générer des événements répétables elle doi
 
 Soit la famille événement journalier qui permet de répéter un événement suivant le jour de la semaine.
 
-| BEGIN  |       "EVENT"       | Évenement journalier |              |     | DAYEVENT |       |     |     |      |      |         |                                                                   |
-| ------ | ------------------- | -------------------- | ------------ | --- | -------- | ----- | --- | --- | ---- | ---- | ------- | ----------------------------------------------------------------- |
-| METHOD | Method.DayEvent.php |                      |              |     |          |       |     |     |      |      |         |                                                                   |
-|        | *idattr*            | idframe              | label        | T   | A        | type  | ord | vis | need | link | phpfile | phpfunc                                                           |
-| ATTR   |                     |                      | Répétabilité | N   | N        | Frame | 200 | W   | N    |      |         |                                                                   |
-| ATTR   | DEVT_DAY            | DEVT_FR_REPEAT       | Jour         | N   | N        | enum  |     |     |      |      |         | 1¦Lundi,2¦Mardi,3¦Mercredi,4¦Jeudi,5¦Vendredi,6¦Samedi,7¦Dimanche |
-| END    |                     |                      |              |     |          |       |     |     |      |      |         |                                                                   |
+| BEGIN |   "EVENT"   | Évenement journalier |              |     | DAYEVENT |       |     |     |      |      |         |                                                                   |
+| ----- | ----------- | -------------------- | ------------ | --- | -------- | ----- | --- | --- | ---- | ---- | ------- | ----------------------------------------------------------------- |
+| CLASS | My\DayEvent |                      |              |     |          |       |     |     |      |      |         |                                                                   |
+|       | *idattr*    | idframe              | label        | T   | A        | type  | ord | vis | need | link | phpfile | phpfunc                                                           |
+| ATTR  |             |                      | Répétabilité | N   | N        | Frame | 200 | W   | N    |      |         |                                                                   |
+| ATTR  | DEVT_DAY    | DEVT_FR_REPEAT       | Jour         | N   | N        | enum  |     |     |      |      |         | 1¦Lundi,2¦Mardi,3¦Mercredi,4¦Jeudi,5¦Vendredi,6¦Samedi,7¦Dimanche |
+| END   |             |                      |              |     |          |       |     |     |      |      |         |                                                                   |
 
 
 
 Cette famille d'événement doit redéfinir la méthode explodeEvt() pour produire
 plusieurs événements atomiques à partir d'un événement répétable.
 
+``` php
+namespace My;
 
-    public function explodeEvt($d1,$d2) {
-
-      include_once("FDL/Lib.Util.php");
-
-
-      $jdi1=($d1=="")?0:Iso8601ToJD($d1);
-      $jdi2=StringDateToJD($this->getValue("evt_begdate"));
-      $jd1=max($jdi1,$jdi2); // search begin date
-      $jdi1=($d2=="")?5000000:Iso8601ToJD($d2);
-      $jdi2=StringDateToJD($this->getValue("evt_enddate"));
-      $jd2=min($jdi1,$jdi2);// search end date
-
-      $day=intval($this->getValue("DEVT_DAY")); // the day to repeat
-      if (($day < 1) || ($day > 7)) {
-        print "error day $day";
-        return array();
-      }
-      $djd1=jdWeekDay($jd1);
-      $jd1+=($day-$djd1+7)%7; // search the first day
-      $te=array();
-      $te1=get_object_vars($this);
-
-      for ($i=$jd1;$i<$jd2;$i+=7) {
-        $te[$i]=$te1;
-        $te[$i]["evt_begdate"]=jd2cal($i); // change date period
-        $te[$i]["evt_enddate"]=jd2cal($i+1); // one day later
-        $te[$i]["evt_desc"]=$i;
-      }
-      return $te;
+class DayEvent extends \Dcp\Family\Event
+{
+    public function explodeEvt($d1, $d2)
+    {
+        include_once ("FDL/Lib.Util.php");
+        
+        $jdi1 = ($d1 == "") ? 0 : Iso8601ToJD($d1);
+        $jdi2 = StringDateToJD($this->getRawValue("evt_begdate"));
+        $jd1 = max($jdi1, $jdi2); // search begin date
+        $jdi1 = ($d2 == "") ? 5000000 : Iso8601ToJD($d2);
+        $jdi2 = StringDateToJD($this->getRawValue("evt_enddate"));
+        $jd2 = min($jdi1, $jdi2); // search end date
+        $day = intval($this->getRawValue("DEVT_DAY")); // the day to repeat
+        if (($day < 1) || ($day > 7)) {
+            throw new \Exception("error day $day");
+        }
+        $djd1 = jdWeekDay($jd1);
+        $jd1+= ($day - $djd1 + 7) % 7; // search the first day
+        $te = array();
+        $te1 = parent::explodeEvt($d1, $d2);
+        
+        for ($i = $jd1; $i < $jd2; $i+= 7) {
+            $te[$i] = $te1[0];
+            $te[$i]["evt_begdate"] = jd2cal($i); // change date period
+            $te[$i]["evt_enddate"] = jd2cal($i + 1); // one day later
+            $te[$i]["evt_desc"] = $i;
+        }
+        
+        return $te;
     }
-
+}
+```
 
 Avec cette famille, l'événement "manger des patates tous les mardis" pourra être
 créé à partir de la famille productrice "menu journalier" par exemple.
@@ -216,21 +245,20 @@ Soit la définition suivante de la famille "menu journalier" :
 
 
 
-| BEGIN  |                     | Menu journalier |                |     | DAYMENU |       |     |     |      |      |         |                                                                   |
-| ------ | ------------------- | --------------- | -------------- | --- | ------- | ----- | --- | --- | ---- | ---- | ------- | ----------------------------------------------------------------- |
-| TAG    | P                   |                 |                |     |         |       |     |     |      |      |         |                                                                   |
-| METHOD | *Method.PEvents.php |                 |                |     |         |       |     |     |      |      |         |                                                                   |
-| METHOD | Method.DayMenu.php  |                 |                |     |         |       |     |     |      |      |         |                                                                   |
-|        | idattr              | idframe         | label          | T   | A       | type  | ord | vis | need | link | phpfile | phpfunc                                                           |
-| ATTR   | DAYM_FR_IDENT       |                 | Identification | N   | N       | frame | 200 | W   |      |      |         |                                                                   |
-| ATTR   | DAYM_DESC           | DAYM_FR_IDENT   | description    | Y   | N       | text  | 210 | W   |      |      |         |                                                                   |
-| ATTR   | DAYM_IDUSER         | DAYM_FR_IDENT   | id utilisateur | N   | N       | docid | 220 | H   |      |      |         |                                                                   |
-| ATTR   | DAYM_USER           | DAYM_FR_IDENT   | utilisateur    | N   | N       | text  | 230 | W   |      |      | fdl.php | lfamily(D,USER,DAYM_USER):DAYM_IDUSER,DAYM_USER                   |
-| ATTR   | DAYM_BEGDATE        | DAYM_FR_IDENT   | date début     | N   | N       | date  | 240 | W   |      |      |         |                                                                   |
-| ATTR   | DAYM_ENDDATE        | DAYM_FR_IDENT   | date fin       | N   | N       | date  | 250 | W   |      |      |         |                                                                   |
-| ATTR   | DAYM_FR_REPEAT      |                 | Répétabilité   | N   | N       | frame | 260 | W   |      |      |         |                                                                   |
-| ATTR   | DAYM_DAY            | DAYM_FR_REPEAT  | jour           | N   | N       | enum  | 270 | W   |      |      |         | 1¦Lundi,2¦Mardi,3¦Mercredi,4¦Jeudi,5¦Vendredi,6¦Samedi,7¦Dimanche |
-| END    |                     |                 |                |     |         |       |     |     |      |      |         |                                                                   |
+| BEGIN |               | Menu journalier |                |     | DAYMENU |       |     |     |      |      |         |                                                                   |
+| ----- | ------------- | --------------- | -------------- | --- | ------- | ----- | --- | --- | ---- | ---- | ------- | ----------------------------------------------------------------- |
+| TAG   | P             |                 |                |     |         |       |     |     |      |      |         |                                                                   |
+| CLASS | My\DayMenu    |                 |                |     |         |       |     |     |      |      |         |                                                                   |
+|       | idattr        | idframe         | label          | T   | A       | type  | ord | vis | need | link | phpfile | phpfunc                                                           |
+| ATTR  | ABS_FR_IDENT  |                 | Identification | N   | N       | frame | 200 | W   |      |      |         |                                                                   |
+| ATTR  | ABS_DESC      | ABS_FR_IDENT    | description    | Y   | N       | text  | 210 | W   |      |      |         |                                                                   |
+| ATTR  | ABS_IDUSER    | ABS_FR_IDENT    | id utilisateur | N   | N       | docid | 220 | H   |      |      |         |                                                                   |
+| ATTR  | ABS_USER      | ABS_FR_IDENT    | utilisateur    | N   | N       | text  | 230 | W   |      |      | fdl.php | lfamily(D,USER,ABS_USER):ABS_IDUSER,ABS_USER                      |
+| ATTR  | ABS_BEGDATE   | ABS_FR_IDENT    | date début     | N   | N       | date  | 240 | W   |      |      |         |                                                                   |
+| ATTR  | ABS_ENDDATE   | ABS_FR_IDENT    | date fin       | N   | N       | date  | 250 | W   |      |      |         |                                                                   |
+| ATTR  | ABS_FR_REPEAT |                 | Répétabilité   | N   | N       | frame | 260 | W   |      |      |         |                                                                   |
+| ATTR  | ABS_DAY       | ABS_FR_REPEAT   | jour           | N   | N       | enum  | 270 | W   |      |      |         | 1¦Lundi,2¦Mardi,3¦Mercredi,4¦Jeudi,5¦Vendredi,6¦Samedi,7¦Dimanche |
+| END   |               |                 |                |     |         |       |     |     |      |      |         |                                                                   |
 
 La famille productrice en plus de mettre à jour les attributs de l'événement «
 brut » doit aussi mettre à jour les informations nécessaire pour la
@@ -238,38 +266,46 @@ répétabilité. Ceci peut être fait en surchargeant la méthode «::setEventSp
 
 Voici un exemple de production de répétable avec la famille « //menu journalier// ».
 
-<code class="php">
+``` php
+namespace My;
 
-    // Methode.DayMenu.php
-
-    public $eventAttBeginDate="DAYM_BEGDATE";
-    public $eventAttEndDate="DAYM_ENDDATE";
-    public $eventAttDesc="DAYM_DESC";
-    public $eventFamily="DAYEVENT";
-
-    var $eventRessources=array("DAYM_IDUSER");
-
-
-
-    function getEventEndDate() {
-      return substr($this->getValue($this->eventAttEndDate),0,10)." 23:59:59";
+class DayMenu extends \Dcp\Family\Document
+{
+    use \Dcp\Freeevent\EventProduct;
+    
+    public function __construct($dbaccess = '', $id = '', $res = '', $dbid = 0)
+    {
+        parent::__construct($dbaccess, $id, $res, $dbid);
+        
+        $this->eventAttBeginDate = "DAYM_BEGDATE";
+        $this->eventAttEndDate = "DAYM_ENDDATE";
+        $this->eventAttDesc = "DAYM_DESC";
+        $this->eventFamily = "DAYEVENT";
+        $this->eventRessources = array(
+            "DAYM_USER"
+        );
     }
-
-
-    function setEventSpec(&amp;$e) { //mise à jour attribut de répétabilité
-
-    $e->setValue("DEVT_DAY", $this->getValue("DAYM_DAY"));
-
+    
+    public function getEventEndDate()
+    {
+        return substr($this->getRawValue($this->eventAttEndDate) , 0, 10) . " 23:59:59";
     }
-
-    function postModify() {
-
-    $this->setEvent();
-
+    /**
+     * Use for derived event by the producer to set added attributes
+     * @param \Dcp\Freeevent\Event $e event object
+     */
+    public function setEventSpec(&$e)
+    { //mise à jour attribut de répétabilité
+        $e->setValue("DEVT_DAY", $this->getRawValue("DAYM_DAY"));
     }
-</code>
+    
+    publicfunction postStore()
+    {
+        $this->setEvent();
+    }
+}
 
-
+```
 
 
 # 4. Affichages temporels des événements 
@@ -302,3 +338,22 @@ comme la recherche d'événement. L'ajout ou la suppression d'événement dans c
 dossier ce fait comme pour un dossier classique. Le dossier événements ne peut
 contenir que des événements.
 
+# Migration depuis la version 2.8
+
+Les fichiers *Méthode* , notamment le fichier `Method.PEvents.php` ne sont plus
+livrés par le module. Les producteurs d'événement doivent dorénavent utiliser le
+trait `\Dcp\Freeevent\EventProduct` au lieur de la méthode "*Method.PEvents.php".
+
+
+La surcharge des attributs  :
+
+*    $eventAttBeginDate : date de début
+*    $eventAttEndDate : date de fin
+*    $eventAttDesc : description longue
+*    $eventAttCode : catégorie
+*    $eventRessources : tableau de ressource;
+  
+doit être indiquée dans le contructeur de la classe de la famille.
+
+L'ancienne documentation pour la version 2.8 est accessible dans le fichier
+[README-2.8.md](README-2.8.md). 
