@@ -4,12 +4,7 @@
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FDL
 */
-/**
- * Created by PhpStorm.
- * User: eric
- * Date: 08/09/14
- * Time: 15:12
- */
+
 
 namespace Dcp\Freeevent\Test;
 
@@ -45,7 +40,6 @@ class Menu extends \Dcp\Family\Document
     
     function postStore()
     {
-        
         $this->setEvent();
     }
 }

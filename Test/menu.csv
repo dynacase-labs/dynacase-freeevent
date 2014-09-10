@@ -1,0 +1,16 @@
+BEGIN;0;Menu du jour;;;TSTDAYMENU;;;;;;;;;;
+;;;;;;;;;;;;;;;
+TAG;P;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;
+CLASS;Dcp\Freeevent\Test\Menu;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;
+//;idattr;idframe;label;T;A;type;ord;vis;need;link;phpfile;phpfunc;elink;constrain;option
+ATTR;DAYM_FR_IDENT ;;Identification ;N ;N ;frame ;200;W ;;;;;;;
+ATTR;DAYM_DESC ;DAYM_FR_IDENT ;description ;Y ;N ;text ;210;W ;Y;;;;;;
+ATTR;DAYM_USER ;DAYM_FR_IDENT ;utilisateur ;N ;N ;account;230;W ;Y;;;;;;
+ATTR;DAYM_BEGDATE ;DAYM_FR_IDENT ;date début ;N ;N ;date ;240;W ;Y;;;;;;
+ATTR;DAYM_ENDDATE ;DAYM_FR_IDENT ;date fin ;N ;N ;date ;250;W ;Y;;;;;;
+ATTR;DAYM_FR_REPEAT ;;Répétabilité ;N ;N ;frame ;260;W ;;;;;;;
+ATTR;DAYM_DAY ;DAYM_FR_REPEAT ;jour ;N ;N ;enum ;270;W ;Y;;;1|Lundi,2|Mardi,3|Mercredi,4|Jeudi,5|Vendredi,6|Samedi,7|Dimanche ;;;system=yes
+;;;;;;;;;;;;;;;
+END;;;;;;;;;;;;;;;
