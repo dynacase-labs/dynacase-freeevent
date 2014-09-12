@@ -6,24 +6,23 @@
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEEVENT
 */
-/* @begin-method-ignore */
-class _PEVENT extends Doc
-{
-    /* @end-method-ignore */
+namespace Dcp\Freeevent;
+trait EventProduct {
     /**
      * Produce events
      * Add or Update events
      */
     function setEvent()
     {
+        
         return $this->pEventDefault();
     }
     /**
      * Use for derived event by the producer to set added attributes
-     * @param Event &$e event object
+     * @param \Dcp\Freeevent\Event $e event object
      */
     function setEventSpec(&$e)
-    {;
+    {
     }
     /**
      * Delete events
@@ -42,32 +41,32 @@ class _PEVENT extends Doc
      * identificator of the attribute which containt the begin date for event
      * @var string
      */
-    var $eventAttBeginDate;
+    public $eventAttBeginDate;
     /**
      * identificator of the attribute which containt the end date for event
      * @var string
      */
-    var $eventAttEndDate;
+    public $eventAttEndDate;
     /**
      * identificator of the attribute which containt the description of the  event
      * @var string
      */
-    var $eventAttDesc;
+    public $eventAttDesc;
     /**
      * identificator of the attribute which containt the code of the event
      * @var string
      */
-    var $eventAttCode;
+    public $eventAttCode;
     /**
      * identificators of the attribute which containt the document id of the ressource
      * @var array
      */
-    var $eventRessources = array();
+    public $eventRessources = array();
     /**
      * name of the family event
      * @var string
      */
-    var $eventFamily = "EVENT";
+    public $eventFamily = "EVENT";
     /**
      * produce event based on default methods
      * @access private
@@ -80,10 +79,13 @@ class _PEVENT extends Doc
         //  if (($this->control("edit")=="")||(isset($this->withoutControl))) { // can modify only if can modify productor
         $evt->disableEditControl();
         if ($evt->isAlive()) {
-            if (($evt->getValue("evt_begdate") != $this->getEventBeginDate()) || ($evt->getValue("evt_enddate") != $this->getEventEndDate())) {
-                $evt->AddComment(sprintf(_("Change period from [%s %s] to [%s %s]") , $evt->getValue("evt_begdate") , $evt->getValue("evt_enddate") , $this->getEventBeginDate() , $this->getEventEndDate()));
+            if (($evt->getRawValue("evt_begdate") != $this->getEventBeginDate()) || ($evt->getRawValue("evt_enddate") != $this->getEventEndDate())) {
+                $evt->addHistoryEntry(sprintf(___("Change period from [%s %s] to [%s %s]", "freeevent") , $evt->getRawValue("evt_begdate") , $evt->getRawValue("evt_enddate") , $this->getEventBeginDate() , $this->getEventEndDate()));
             } else {
-                $evt->AddComment(sprintf(_("Changes from document \"%s\" [%d]") , $this->title, $this->id));
+                /**
+                 * @var \Doc|EventProduct $this
+                 */
+                $evt->addHistoryEntry(sprintf(___("Changes from document \"%s\" [%d]", "freeevent") , $this->getTitle() , $this->id));
             }
         }
         $evt->setValue("evt_begdate", $this->getEventBeginDate());
@@ -97,7 +99,7 @@ class _PEVENT extends Doc
         $evt->setValue("evt_idinitiator", $this->initid);
         $evt->setValue("evt_title", $this->getEventTitle());
         $evt->setValue("evt_idres", $this->getEventRessources());
-        
+        $err = "";
         $this->setEventSpec($evt);
         if (!$evt->isAlive()) {
             $err = $evt->Add();
@@ -117,13 +119,19 @@ class _PEVENT extends Doc
      */
     function dEventDefault()
     {
+        $err = "";
+        /**
+         * @var \Doc|EventProduct $this
+         */
         $evt = createDoc($this->dbaccess, $this->eventFamily, false);
         if ($evt) {
             include_once ("FDL/Lib.Dir.php");
-            $filter[] = "evt_idinitiator='" . $this->initid . "'";
-            $filter[] = "evt_transft='pEventDefault'";
-            // search if already created
-            $tevt = getChildDoc($this->dbaccess, 0, 0, 1, $filter, 1, "TABLE", $this->eventFamily);
+            $s = new \SearchDoc($this->dbaccess, $this->eventFamily);
+            $s->addFilter("evt_idinitiator=%d", $this->initid);
+            $s->addFilter("evt_transft='pEventDefault'");
+            $s->setObjectReturn(false);
+            $tevt = $s->search();
+            
             if (count($tevt) > 0) {
                 $evt = new_Doc($this->dbaccess, $tevt[0]["id"]);
             }
@@ -135,19 +143,25 @@ class _PEVENT extends Doc
     }
     /**
      * get the begin date for the event
-     * @return timestamp the date in iso8601 format or native (French)
+     * @return string timestamp the date in iso8601 format or native (French)
      */
     function getEventBeginDate()
     {
-        return $this->getValue($this->eventAttBeginDate);
+        /**
+         * @var \Doc|EventProduct $this
+         */
+        return $this->getRawValue($this->eventAttBeginDate);
     }
     /**
      * get the end date for the event
-     * @return timestamp the date in iso8601 format or native (French)
+     * @return string timestamp the date in iso8601 format or native (French)
      */
     function getEventEndDate()
     {
-        return $this->getValue($this->eventAttEndDate);
+        /**
+         * @var \Doc|EventProduct $this
+         */
+        return $this->getRawValue($this->eventAttEndDate);
     }
     /**
      * get the owner of the event
@@ -155,7 +169,10 @@ class _PEVENT extends Doc
      */
     function getEventOwner()
     {
-        $u = new User("", $this->owner);
+        /**
+         * @var \Doc|EventProduct $this
+         */
+        $u = new \Account("", $this->owner);
         return $u->fid;
     }
     /**
@@ -164,6 +181,9 @@ class _PEVENT extends Doc
      */
     function getEventTitle()
     {
+        /**
+         * @var \Doc|EventProduct $this
+         */
         return $this->title;
     }
     /**
@@ -172,7 +192,10 @@ class _PEVENT extends Doc
      */
     function getEventDesc()
     {
-        return $this->getValue($this->eventAttDesc);
+        /**
+         * @var \Doc|EventProduct $this
+         */
+        return $this->getRawValue($this->eventAttDesc);
     }
     /**
      * get the category of the event
@@ -180,7 +203,10 @@ class _PEVENT extends Doc
      */
     function getEventCode()
     {
-        return $this->getValue($this->eventAttCode);
+        /**
+         * @var \Doc|EventProduct $this
+         */
+        return $this->getRawValue($this->eventAttCode);
     }
     /**
      * get the ressources
@@ -188,9 +214,12 @@ class _PEVENT extends Doc
      */
     function getEventRessources()
     {
+        /**
+         * @var \Doc|EventProduct $this
+         */
         $tr = array();
         foreach ($this->eventRessources as $rid) {
-            $v = $this->getValue($rid);
+            $v = $this->getRawValue($rid);
             if ($v != "") $tr[] = $v;
         }
         return $tr;
@@ -200,12 +229,16 @@ class _PEVENT extends Doc
      */
     function complete()
     {
+        /**
+         * @var \Doc|EventProduct $this
+         */
         $this->getDefaultEvent(true); // reset
         
     }
     /**
      * get the default event
-     * @return Doc::Event the event object
+     * @param bool $reset
+     * @return Event the event object
      */
     function getDefaultEvent($reset = false)
     {
@@ -217,11 +250,16 @@ class _PEVENT extends Doc
         }
         
         if ($__evtid == 0) {
-            include_once ("FDL/Lib.Dir.php");
-            $filter[] = "evt_idinitiator='" . $this->initid . "'";
-            $filter[] = "evt_transft='pEventDefault'";
+            /**
+             * @var \Doc|EventProduct $this
+             */
+            $s = new \SearchDoc($this->dbaccess, $this->eventFamily);
+            $s->addFilter("evt_idinitiator='%d'", $this->initid);
+            $s->addFilter("evt_transft='pEventDefault'");
+            $s->overrideViewControl();
+            $s->setSlice(1);
+            $tevt = $s->search();
             // search if already created
-            $tevt = getChildDoc($this->dbaccess, 0, 0, 1, $filter, 1, "TABLE", $this->eventFamily);
             if (count($tevt) > 0) $__evtid = $tevt[0]["id"];
         }
         
@@ -232,7 +270,4 @@ class _PEVENT extends Doc
         }
         return $evt;
     }
-    /* @begin-method-ignore */
 }
-/* @end-method-ignore */
-?>

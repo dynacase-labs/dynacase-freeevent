@@ -1,37 +1,36 @@
 <?php
 /*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+ */
+
+
+namespace Dcp\Freeevent;
+/*
  * Dynamic calendar methods
  *
  * @author Anakeen
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEEVENT
 */
-/* @begin-method-ignore */
-class _CALENDAR extends _DSEARCH
-{
-    /* @end-method-ignore */
-    public $eviews = array(
-        "FREEEVENT:EDITCALENDAR"
-    );
-    public $cviews = array(
-        "FREEEVENT:PLANNER",
-        "FREEEVENT:VIEWCALENDAR"
-    );
-    public $defaultedit = "FREEEVENT:EDITCALENDAR";
-    public $defaultview = "FREEEVENT:PLANNER";
+/**
+ * Class Calendar
+ *
+ * @target \Dir
+ * @package Dcp\Freeevent
+ */
+trait Calendar {
     
     public $xmlview = "FREEEVENT:XMLEVLIST";
-    
-    function postCreated()
-    {
-        if ($this->getValue("SE_FAMID") == "") $this->setValue("SE_FAMID", getFamIdFromName($this->dbaccess, "EVENT"));
-    }
     /**
      * return all atomic event found in period between $d1 and $d2
      *
-     * @param date $d1 begin date in iso8601 format YYYY-MM-DD HH:MM
-     * @param date $d2 end date in iso8601 format
-     * @param int famid [=EVENT] to limit search on this family
+     * @param string $d1 begin date in iso8601 format YYYY-MM-DD HH:MM
+     * @param string $d2 end date in iso8601 format
+     * @param bool $exploded
+     * @param array $filter
+     * @param int|string $famid [=EVENT] to limit search on this family
      * @return array array of event. These events returned are not objects but only a array of variables.
      */
     function getEvents($d1 = "", $d2 = "", $exploded = true, $filter = array() , $famid = "EVENT")
@@ -40,12 +39,16 @@ class _CALENDAR extends _DSEARCH
         else $filter[] = "evt_begdate <= '$d2'";
         if ($d1 == "") $filter[] = "evt_enddate is not null";
         else $filter[] = "evt_enddate >= '$d1'";
-        
+        /**
+         * @var \Dir $this
+         */
         $tev = $this->getContent(true, $filter);
         if (!$exploded) return $tev;
         $tevx = array();
-        $fdoc = array();
-        foreach ($tev as $k => $v) {
+        foreach ($tev as $v) {
+            /**
+             * @var Event $doc
+             */
             $doc = getDocObject($this->dbaccess, $v);
             $tevtx1 = $doc->explodeEvt($d1, $d2);
             //	      $tevx+=$tevtx1;
@@ -54,21 +57,6 @@ class _CALENDAR extends _DSEARCH
         
         return $tevx;
     }
-
-    /**
-     * Calendar view
-     * @param string $target window target name for hyperlink destination
-     * @param bool $ulink if false hyperlink are not generated
-     * @param bool $abstract if true only abstract attribute are generated
-     * @templateController
-     */
-    function viewcalendar($target = "_self", $ulink = true, $abstract = false)
-    {
-        
-        $this->viewprop($target, $ulink, $abstract);
-        $this->viewdsearch($target, $ulink, $abstract);
-    }
-
     /**
      * Calendar edit view
      * @param string $target window target name for hyperlink destination
@@ -78,6 +66,9 @@ class _CALENDAR extends _DSEARCH
      */
     function editcalendar($target = "_self", $ulink = true, $abstract = false)
     {
+        /**
+         * @var \Dir $this
+         */
         $this->editattr();
         $this->viewprop($target, $ulink, $abstract);
         $oa = $this->getAttribute("se_famid");
@@ -87,7 +78,7 @@ class _CALENDAR extends _DSEARCH
      * planner view
      * @param string $target window target name for hyperlink destination
      * @param bool $ulink if false hyperlink are not generated
-     * @param bool $abstract if true only abstract attribute are generated
+     * @param bool|string $abstract if true only abstract attribute are generated
      * @templateController
      */
     function planner($target = "finfo", $ulink = true, $abstract = "Y")
@@ -95,16 +86,22 @@ class _CALENDAR extends _DSEARCH
         include_once ("FREEEVENT/Lib.DCalendar.php");
         include_once ("WHAT/Lib.Color.php");
         global $action;
-        
+        /**
+         * @var \Dcp\Freeevent\Scalendar|\Dcp\Freeevent\Dcalendar $this
+         */
         if ($this->needParameters()) {
             // redirect to zone viewdsearch
-            $this->lay = new Layout(getLayoutFile("FREEDOM", "viewdsearch.xml") , $action);
+            
+            /**
+             * @var \Dcp\Family\Dsearch|Calendar $this
+             */
+            $this->lay = new \Layout(getLayoutFile("FREEDOM", "viewdsearch.xml") , $action);
             $this->viewdsearch($target, $ulink, $abstract);
             $this->lay->set("saction", getHttpVars("saction", "FDL_CARD"));
             $this->lay->set("sapp", getHttpVars("sapp", "FDL"));
             $this->lay->set("sid", getHttpVars("sid", "id"));
             $this->lay->set("starget", getHttpVars("starget", "_self"));
-            $this->lay->set("stext", _("view planner"));
+            $this->lay->set("stext", ___("view planner","freeevent"));
             return;
         }
         $action->parent->AddJsRef("FDL:JDATE.JS", true);
@@ -112,16 +109,15 @@ class _CALENDAR extends _DSEARCH
         $action->parent->AddCssRef("FREEEVENT:PLANNER.CSS", true);
         //  $action->parent->AddCssRef($action->GetParam("CORE_PUBURL")."/FREEEVENT/Layout/planner.css",true);
         if (getHttpVars("byres") != "") $byres = (getHttpVars("byres", "N") == "Y");
-        else $byres = (($this->getValue("DCAL_GROUPBY", "BYRES")) == "BYRES");
+        else $byres = (($this->getRawValue("DCAL_GROUPBY", "BYRES")) == "BYRES");
         $this->lay->set("byres", $byres);
         
-        $idxc = $this->getValue("DCAL_COLORIDX", "ir"); // color index (by ressource by default)
-        $korder1 = $this->getValue("DCAL_ORDERIDX1", "absx");; // begin date by default
-        $korder2 = $this->getValue("DCAL_ORDERIDX2");
-        $kdesc1 = $this->getValue("DCAL_ORDERDESC1");
-        $kdesc2 = $this->getValue("DCAL_ORDERDESC2");
-        $dlum = $this->getValue("DCAL_LUMINANCE", "0.8");
-        $mb = microtime();
+        $idxc = $this->getRawValue("DCAL_COLORIDX", "ir"); // color index (by ressource by default)
+        $korder1 = $this->getRawValue("DCAL_ORDERIDX1", "absx");; // begin date by default
+        $korder2 = $this->getRawValue("DCAL_ORDERIDX2");
+        $kdesc1 = $this->getRawValue("DCAL_ORDERDESC1");
+        $kdesc2 = $this->getRawValue("DCAL_ORDERDESC2");
+        $dlum = $this->getRawValue("DCAL_LUMINANCE", "0.8");
         // window time interval
         $hwstart = getHttpVars("wstart");
         if ($hwstart) {
@@ -186,13 +182,12 @@ class _CALENDAR extends _DSEARCH
             }
         }
         
-        $tidres = $this->getTValue("DCAL_IDRES");
-        $onlyres = ($this->getValue("dcal_viewonlyres", "all") == "only");
-        $ridx = 0;
+        $tidres = $this->getMultipleRawValues("DCAL_IDRES");
+        $onlyres = ($this->getRawValue("dcal_viewonlyres", "all") == "only");
         $delta = $mend - $mstart;
-        $titleinline = ($this->getValue("dcal_prestitle", "INLINE") == "INLINE");
-        $titleinleft = ($this->getValue("dcal_prestitle", "INLINE") == "LEFT");
-        $iconinline = ($this->getValue("dcal_presicon", "INLINE") == "INLINE");
+        $titleinline = ($this->getRawValue("dcal_prestitle", "INLINE") == "INLINE");
+        $titleinleft = ($this->getRawValue("dcal_prestitle", "INLINE") == "LEFT");
+        $iconinline = ($this->getRawValue("dcal_presicon", "INLINE") == "INLINE");
         $this->lay->set("inleft", $titleinleft);
         $this->lay->set("icoinline", $iconinline);
         $this->lay->set("dday100", round($delta));
@@ -201,12 +196,14 @@ class _CALENDAR extends _DSEARCH
         $this->lay->set("ppar", $this->urlWhatEncodeSpec(""));
         $sub = 0;
         $idc = 0;
+        $tres = $colorredid = $RN = array();
         //   print "delta=$delta";
         //   print " - <B>".microtime_diff(microtime(),$mb)."</B> ";
+        $residx = array();
         foreach ($tevt as $k => $v) {
-            $tr = $this->_val2array(getv($v, "evt_idres"));
-            $tresname = $this->_val2array(getv($v, "evt_res"));
-            $x = floor(100 * ($v["m1"] - $mstart) / $delta);
+            $tr = $this->rawValueToArray(getv($v, "evt_idres"));
+            $tresname = $this->rawValueToArray(getv($v, "evt_res"));
+            //$x = floor(100 * ($v["m1"] - $mstart) / $delta);
             $w = floor(100 * ($v["m2"] - $v["m1"]) / $delta);
             foreach ($tr as $ki => $ir) {
                 if ($onlyres && (!in_array($ir, $tidres))) continue;
@@ -226,8 +223,8 @@ class _CALENDAR extends _DSEARCH
                     "eid" => getv($v, "id") ,
                     "res" => $tresname[$ki],
                     "subtype" => getv($v, "evt_code") ,
-                    "divtitle" => ($titleinline) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : _("DATE ERROR")) . $v["title"]) : '',
-                    "divtitle2" => ($titleinleft) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : _("DATE ERROR")) . $v["title"]) : '',
+                    "divtitle" => ($titleinline) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : ___("DATE ERROR","freeevent")) . $v["title"]) : '',
+                    "divtitle2" => ($titleinleft) ? (((($v["m2"] - $v["m1"]) > 0) ? '' : ___("DATE ERROR","freeevent")) . $v["title"]) : '',
                     "desc" => str_replace(array(
                         "\n",
                         "\r",
@@ -248,8 +245,6 @@ class _CALENDAR extends _DSEARCH
             }
         }
         if (count($tres) > 0) {
-            $dcol = 360 / count($colorredid);
-            
             $plancolor = $action->read("plancolor");
             $deltacolor = 0;
             if (is_array($plancolor)) {
@@ -347,50 +342,12 @@ class _CALENDAR extends _DSEARCH
         }
         return (($a[$k1]) < ($b[$k1])) ? $r11 : $r12;
     }
-    
-    function ComputeQuery($keyword = "", $famid = - 1, $latest = "yes", $sensitive = false, $dirid = - 1, $subfolder = true)
-    {
-        if ($dirid > 0) {
-            
-            if ($subfolder) $cdirid = getRChildDirId($this->dbaccess, $dirid);
-            else $cdirid = $dirid;
-        } else $cdirid = 0;;
-        
-        $filters = $this->getSqlGeneralFilters($keyword, $latest, $sensitive);
-        $specialorder = getHttpVars("orderby");
-        if ($specialorder) $this->setValue("se_orderby", $specialorder);
-        $cond = $this->getSqlDetailFilter();
-        if ($cond === false) return array(
-            false
-        );
-        
-        if ($cond != "") $filters[] = $cond;
-        
-        $text = $this->getValue("DCAL_TEXT");
-        if ($text != "") {
-            $cond = $this->getSqlCond("values", $this->getValue("DCAL_TEXTOP", "~*") , $text);
-            $filters[] = $cond;
-        }
-        $idp = $this->getValue("DCAL_IDPRODUCER");
-        if ($idp != "") {
-            $cond = $this->getSqlCond("evt_frominitiatorid", "=", $idp);
-            $filters[] = $cond;
-        }
-        $tidres = $this->getTValue("DCAL_IDRES");
-        foreach ($tidres as $k => $v) {
-            if (!($v > 0)) unset($tidres[$k]);
-        }
-        //  print_r2($tidres);
-        if (count($tidres) > 0) {
-            $cond = $this->getSqlCond("evt_idres", "~y", $tidres);
-            $filters[] = $cond;
-        }
-        
-        $query = getSqlSearchDoc($this->dbaccess, $cdirid, $famid, $filters, $distinct, $latest == "yes", $this->getValue("se_trash"));
-        
-        return $query;
-    }
-    
+    /**
+     * @templateController Event list
+     * @param string $target
+     * @param bool $ulink
+     * @param string $abstract
+     */
     function XmlEvList($target = "finfo", $ulink = true, $abstract = "N")
     {
         
@@ -398,11 +355,12 @@ class _CALENDAR extends _DSEARCH
         $d1 = GetHttpVars("ts", time() - (24 * 3600 * 30));
         $d2 = GetHttpVars("te", time() + (24 * 3600 * 30));
         
-        $sd1 = strftime("%d/%m/%Y %H:%M", $d1);
-        $sd2 = strftime("%d/%m/%Y %H:%M", $d2);
+        $sd1 = strftime("%Y-%m-%d %H:%M", $d1);
+        $sd2 = strftime("%Y-%m-%d %H:%M", $d2);
         $evt = array();
-        $tevt = array();
-        
+        /**
+         * @var \Dir|Calendar $this
+         */
         $this->lay->set("uptime", time());
         
         $evmenu = array();
@@ -412,7 +370,10 @@ class _CALENDAR extends _DSEARCH
         
         if ($lastrev > 0) $this->setValue("se_trash", "also");
         $tevt = $this->getEvents($sd1, $sd2, true, $filter);
-        foreach ($tevt as $k => $v) {
+        foreach ($tevt as $v) {
+            /**
+             * @var Event $ev
+             */
             $ev = getDocObject($this->dbaccess, $v);
             $evt[count($evt) ]["cevent"] = $ev->viewdoc($ev->XmlResume);
             if (!isset($evmenu[$ev->fromid])) {
@@ -431,9 +392,9 @@ class _CALENDAR extends _DSEARCH
         foreach ($evmenu as $k => $v) {
             $this->lay->setBlockData("MITEMS$k", $items[$k]);
         }
+        header('Content-Type: text/xml; charset="utf-8"');
+        
         return;
     }
-    /* @begin-method-ignore */
 }
-/* @end-method-ignore */
 ?>

@@ -125,7 +125,7 @@ function placeDays() {
   pDJMonth=0;
   for (var i=0;i<nbday;i++) {
     dx=dw*i;
-    if (weekDay(mstart+i)=='[TEXT:Monday]') {
+    if (weekDay(mstart+i)=='[TEXT(freeevent):Monday]') {
       // begin week
       if ((dw*zoomx*7) > minw) { // mini 10 pixel
 	
@@ -135,14 +135,17 @@ function placeDays() {
 	onweek.id='DIV'+(ndiv++);
 	nWeek=jdToWeekNumber(mstart+i-7);
 	onweek.innerHTML=nWeek;
-	onweek.title=jd_to_cal(mstart+i);
+	onweek.title='[TEXT(freeevent):From] '+
+        jd_to_cal(mstart+i-7).substr(0,10)+
+        ' [TEXT(freeevent):to] ' +
+        jd_to_cal(mstart+i-1).substr(0,10);
 	onweek.style.width=(parseInt(rw+bx+(dx*zoomx))-pXWeek)+'px';
 	onweek.style.height='20px';
 	onweek.style.top=(by-40)+'px';
 	onweek.style.left=pXWeek+'px';
 	if (isFixed) onweek.style.position='fixed';
-	if ((nWeek % 2) == 0) onweek.className='weekOdd';
-	else onweek.className='weekEven';
+	if ((nWeek % 2) == 0) onweek.className+=' weekOdd';
+	else onweek.className+=' weekEven';
 	ocdday.appendChild(onweek);
 	nWeek++;
 	pDJWeek=i;
@@ -183,8 +186,8 @@ function placeDays() {
 	onmonth.style.top=(by-60)+'px';
 	onmonth.style.left=pXMonth+'px';
 	if (isFixed) onmonth.style.position='fixed';
-	if ((nMonth % 2) == 1) onmonth.className='monthOdd';
-	else onmonth.className='monthEven';
+	if ((nMonth % 2) == 1) onmonth.className+=' monthOdd';
+	else onmonth.className+=' monthEven';
 	ocdday.appendChild(onmonth);	
 	pXMonth=parseInt(rw+bx+(dx*zoomx));
 	pDJMonth=i;	 
@@ -215,7 +218,7 @@ function placeDays() {
 	onyear.style.height=20+'px';
 	onyear.style.top=(by-80)+'px';
 	onyear.style.left=pXYear+'px'; 
-	onyear.className='year';
+	onyear.className+=' year';
 	if (isFixed) onyear.style.position='fixed';
 	ocdday.appendChild(onyear);	
 	pXYear=parseInt(rw+bx+(dx*zoomx));
@@ -226,7 +229,7 @@ function placeDays() {
       tjdstart[ndiv]=mstart+i;
       tjdend[ndiv]=mstart+i+1;
       onday.id='DIV'+(ndiv++);
-      onday.title=weekDay(mstart+i)+jd_to_cal(mstart+i);
+      onday.title=weekDay(mstart+i)+' '+jd_to_cal(mstart+i).substr(0,10);
       if ((dw*zoomx)>80) onday.innerHTML=weekDay(mstart+i)+' '+jd_to_cal(mstart+i,'d');
       else onday.innerHTML=jd_to_cal(mstart+i,'d');
       onday.style.top=(by-20)+'px';
@@ -236,8 +239,8 @@ function placeDays() {
       //      onday.style.height=(maxh)-xyby.y+(dh*zoomy)-60;
       onday.style.height=20+'px';
       onday.style.left=(parseInt(rw+bx+(dx*zoomx)))+'px';
-      if ((i % 2) == 0) onday.className='dayOdd';
-      else onday.className='dayEven';
+      if ((i % 2) == 0) onday.className+=' dayOdd';
+      else onday.className+=' dayEven';
       ocdday.appendChild(onday);
       
       // grid x
@@ -259,7 +262,7 @@ function placeDays() {
 	// include hours
 	onhour=odhour.cloneNode(true);
 	onhour.id='DIV'+(ndiv++);
-	onhour.title=weekDay(mstart+i)+jd_to_cal(mstart+i);
+	onhour.title=weekDay(mstart+i)+' '+jd_to_cal(mstart+i).substr(0,10);
 	
 	onhour.style.top=by+'px';
 	
@@ -267,8 +270,8 @@ function placeDays() {
 	if (isFixed) onhour.style.position='fixed';
 	onhour.style.height=20+'px';
 	  onhour.style.left=parseInt(rw+bx+(dx*zoomx))+'px';
-	if ((i % 2) == 0) onhour.className='dayOdd';
-	else onhour.className='dayEven';
+	if ((i % 2) == 0) onhour.className+=' dayOdd';
+	else onhour.className+=' dayEven';
 	ocdday.appendChild(onhour);
       }
     }
@@ -286,8 +289,8 @@ function placeDays() {
     onweek.style.top=(by-40)+'px';
     onweek.style.left=pXWeek+'px';
     if (isFixed) onweek.style.position='fixed';
-    if ((nWeek % 2) == 0) onweek.className='weekOdd';
-    else onweek.className='weekEven';
+    if ((nWeek % 2) == 0) onweek.className+=' weekOdd';
+    else onweek.className+=' weekEven';
     ocdday.appendChild(onweek);
     if ((dw*zoomx) <= minw) {
 	
@@ -318,8 +321,8 @@ function placeDays() {
     onmonth.style.top=(by-60)+'px';
     onmonth.style.left=pXMonth+'px';
     if (isFixed) onmonth.style.position='fixed';
-    if ((nMonth % 2) == 0) onmonth.className='monthOdd';
-    else onmonth.className='monthEven';
+    if ((nMonth % 2) == 0) onmonth.className+=' monthOdd';
+    else onmonth.className+=' monthEven';
     ocdday.appendChild(onmonth);	
     pXMonth=parseInt(rw+bx+(dx*zoomx));	
     if ((dw*zoomx*7) <= minw) {
@@ -349,7 +352,7 @@ function placeDays() {
   onyear.style.height=20+'px';
   onyear.style.top=(by-80)+'px';
   onyear.style.left=pXYear+'px'; 
-  onyear.className='year';
+  onyear.className+=' year';
   ocdday.appendChild(onyear);	
   pXYear=parseInt(rw+bx+(dx*zoomx));
   

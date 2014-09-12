@@ -11,12 +11,12 @@ applib = FDL
 
 export pubdir utildir appname applib
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 
 export targetdir PACKAGE
 
-SUBDIR=  Class Images Zone
+SUBDIR=  Class Images Zone locale
 
 pages_not_xml = info.xml
 
@@ -34,9 +34,15 @@ $(pubdir)/EXTERNALS :
 	mkdir -p $@
 
 $(pubdir)/EXTERNALS/event.php: $(pubdir)/EXTERNALS 
-	cp $(appname)_external.php $(pubdir)/EXTERNALS/event.php
+	cd $(pubdir)/EXTERNALS; \
+	ln -s ../FREEEVENT/$(appname)_external.php event.php
 
 $(pubdir)/$(appname)/freeevent.ods : freeevent.ods 
 	cp freeevent.ods $(pubdir)/$(appname)
 
 publish: $(pubdir)/$(appname)/freeevent.ods $(pubdir)/EXTERNALS/event.php
+
+
+clean:
+	/bin/rm -f *.*~ config.* Makefile configure $(appname)_init.php info.xml $(PACKAGE)-*webinst
+	/bin/rm -fr autom4te.cache

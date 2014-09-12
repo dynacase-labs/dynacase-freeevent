@@ -6,10 +6,11 @@
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FREEEVENT
 */
-/* @begin-method-ignore */
-class _EVENT extends Doc
+
+namespace Dcp\Freeevent;
+
+class Event extends \Dcp\Family\Document
 {
-    /* @end-method-ignore */
     var $calVResume = "FREEEVENT:CALVRESUME";
     var $calVCard = "FREEEVENT:CALVCARD";
     var $calVLongText = "FREEEVENT:CALVLONGTEXT";
@@ -30,43 +31,44 @@ class _EVENT extends Doc
      * return all atomic event found in period between $d1 and $d2 for this event
      * by default it is itself.
      * this method must be change by derived class when events can be repeat.
-     * @param date $d1 begin date in iso8601 format YYYY-MM-DD HH:MM
-     * @param date $d2 end date in iso8601 format
+     * @param string $d1 begin date in iso8601 format YYYY-MM-DD HH:MM
+     * @param string $d2 end date in iso8601 format
      * @return array array of event. These events returned are not objects but only a array of variables.
      */
     function explodeEvt($d1, $d2)
     {
-        return array(
-            get_object_vars($this)
-        );
+        $vals=$this->getValues();
+        foreach ($this->fields as $k=>$v) {
+            if (is_numeric($k)) {
+                $vals[$v]=$this->$v;
+            }
+        }
+        $vals["attrids"]=$this->attrids;
+        $vals["values"]=$this->values;
+        return array($vals);
     }
-    function explodeEvtTest($d1, $d2)
-    {
-        $t1[] = get_object_vars($this);
-        $this->setValue("evt_begdate", "10/12/2003");
-        $this->evt_enddate = "20/12/2003";
-        $t1[] = get_object_vars($this);
-        return $t1;;
-    }
+
     
     function getEventIcon()
     {
-        $eicon = $this->getValue("EVT_ICON");
-        if ($eicon == "") return $this->getValue("EVT_FROMINITIATORICON");
+        $eicon = $this->getRawValue("EVT_ICON");
+        if ($eicon == "") return $this->getRawValue("EVT_FROMINITIATORICON");
         return "";
     }
-    
+
+    /**
+     * @templateController Xml event
+     */
     function XmlResume()
     {
-        global $action;
         $this->lay->set("id", $this->id);
-        $this->lay->set("pid", $this->getValue("evt_idinitiator"));
+        $this->lay->set("pid", $this->getRawValue("evt_idinitiator"));
         $this->lay->set("revdate", $this->revdate);
         $this->lay->set("revstatus", ($this->doctype == 'Z' ? 2 : 1));
-        $this->lay->set("title", $this->getValue("evt_title"));
+        $this->lay->set("title", $this->getRawValue("evt_title"));
         $this->lay->set("displaymode", $this->displayMode());
-        $this->lay->set("time", FrenchDateToUnixTs($this->getValue("evt_begdate")));
-        $dur = FrenchDateToUnixTs($this->getValue("evt_enddate")) - FrenchDateToUnixTs($this->getValue("evt_begdate"));
+        $this->lay->set("time", StringDateToUnixTs($this->getRawValue("evt_begdate")));
+        $dur = StringDateToUnixTs($this->getRawValue("evt_enddate")) - StringDateToUnixTs($this->getRawValue("evt_begdate"));
         $dur = ($dur < 0 ? -$dur : $dur);
         $this->lay->set("duration", $dur);
         
@@ -83,13 +85,16 @@ class _EVENT extends Doc
         
         return;
     }
-    
+
+    /**
+     * @templateController Xml event
+     */
     function XmlHtmlContent()
     {
-        $this->lay->set("evtitle", $this->getValue("evt_title"));
-        $this->lay->set("evfamicon", $this->getIcon($this->getValue("evt_icon")));
-        $this->lay->set("evstart", substr($this->getValue("evt_begdate") , 0, 16));
-        $this->lay->set("evend", substr($this->getValue("evt_enddate") , 0, 16));
+        $this->lay->set("evtitle", $this->getRawValue("evt_title"));
+        $this->lay->set("evfamicon", $this->getIcon($this->getRawValue("evt_icon")));
+        $this->lay->set("evstart", substr($this->getRawValue("evt_begdate") , 0, 16));
+        $this->lay->set("evend", substr($this->getRawValue("evt_enddate") , 0, 16));
         return;
     }
     
@@ -154,21 +159,21 @@ class _EVENT extends Doc
     {
         $this->lay->set("ID", $this->id);
         $this->lay->set("FROMID", $this->fromid);
-        $this->lay->set("EVT_IDINITIATOR", $this->getValue("evt_idinitiator", $this->id));
-        $this->lay->set("EVT_FROMINITIATORID", $this->getValue("evt_frominitiatorid", $this->fromid));
+        $this->lay->set("EVT_IDINITIATOR", $this->getRawValue("evt_idinitiator", $this->id));
+        $this->lay->set("EVT_FROMINITIATORID", $this->getRawValue("evt_frominitiatorid", $this->fromid));
         
         $this->lay->set("displayable", ($this->isConfidential() ? "false" : "true"));
         $this->lay->set("title", addSlashes($this->getTitle()));
-        $this->lay->set("start", FrenchDateToUnixTs($this->getValue("evt_begdate") , true));
-        $this->lay->set("lstart", $this->getValue("evt_begdate"));
-        $this->lay->set("lend", $this->getValue("evt_enddate"));
-        $this->lay->set("end", FrenchDateToUnixTs($this->getValue("evt_enddate") , true));
+        $this->lay->set("start", StringDateToUnixTs($this->getRawValue("evt_begdate") , true));
+        $this->lay->set("lstart", $this->getRawValue("evt_begdate"));
+        $this->lay->set("lend", $this->getRawValue("evt_enddate"));
+        $this->lay->set("end", StringDateToUnixTs($this->getRawValue("evt_enddate") , true));
         $this->lay->set("alarm", "''");
         
         if (method_exists($this, "getMenuLoadUrl")) $this->lay->set("menuurl", $this->getMenuLoadUrl());
         else $this->lay->set("menuurl", "");
         
-        $this->lay->set("icons", "'" . $this->getIcon($this->getValue("evt_icon")) . "'");
+        $this->lay->set("icons", "'" . $this->getIcon($this->getRawValue("evt_icon")) . "'");
         $this->lay->set("bgColor", $this->getBgColor());
         $this->lay->set("fgColor", $this->getFgColor());
         $this->lay->set("topColor", $this->getTopColor());
@@ -179,7 +184,4 @@ class _EVENT extends Doc
         $this->lay->set("fastedit", "false");
         $this->lay->set("editable", ($this->canEdit() == "" ? "true" : "false"));
     }
-    /* @begin-method-ignore */
 }
-/* @end-method-ignore */
-?>

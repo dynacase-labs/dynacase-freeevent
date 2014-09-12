@@ -1,0 +1,6 @@
+BEGIN;EVENT;Événement journalier ;;;DAYEVENT ;;;;;;;;;;
+CLASS;Dcp\Freeevent\Test\DayMenu;;;;;;;;;;;;;;
+//;idattr;idframe;label;T;A;type;ord;vis;need;link;phpfile;phpfunc;elink;constrain;option
+ATTR;DEVT_FR_REPEAT;;Répétabilité ;N ;N ;frame;200;W ;N ;;;;;;
+ATTR;DEVT_DAY;DEVT_FR_REPEAT;Jour ;N ;N ;enum ;210;W ;;;;1|Lundi,2|Mardi,3|Mercredi,4|Jeudi,5|Vendredi,6|Samedi,7|Dimanche ;;;system=yes
+END;;;;;;;;;;;;;;;

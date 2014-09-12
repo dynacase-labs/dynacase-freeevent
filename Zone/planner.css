@@ -215,7 +215,23 @@ BUTTON.bnav {
   [IF ISIE]filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='[IMG:7hi.png]',sizingMethod='scale');[ENDIF ISIE]
   font-size:7pt;		
   cursor:pointer;
+  width:2em;
+  height:20px;
+
 }
 BUTTON.bnav:hover {
 	background-image:none;
+}
+
+.calendar-head {
+    background-color:transparent;
+    border : solid 1px grey;
+}
+.calendar-period {
+    line-height: 20px;
+}
+.calendar-head button{
+    font-size:12px;
+    width:2em;
+    height:20px;
 }
