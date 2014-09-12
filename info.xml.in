@@ -1,30 +1,40 @@
 <?xml version="1.0"?>
 <module name="dynacase-freeevent" version="@VERSION@" release="@RELEASE@" license="@LICENSE@">
-  <description>Process temporal events for dynacase families</description>
+    <description>Process temporal events for dynacase families</description>
 
-  <replaces>
-        <module name="freedom-freeevent" />
-  </replaces>
+    <replaces>
+        <module name="freedom-freeevent"/>
+    </replaces>
 
-  <requires>
-    <module name="dynacase-core" comp="ge" version="3.2.0" />
-  </requires>
+    <requires>
+        <module name="dynacase-core" comp="ge" version="3.2.0"/>
+    </requires>
 
-  <post-install>
-    <process command="programs/record_application FREEEVENT" />
-    <process command="./wsh.php --api=importDocuments --file=./FREEEVENT/freeevent.ods" />
-    <process command="programs/app_post FREEEVENT I" />
-    <process command="programs/app_post FREEEVENT U" />
-    <process command="programs/update_catalog" />
-  </post-install>
+    <pre-install>
+        <check type="phpversion" predicate="ge" version="5.4.0">
+            <label lang="en">Check PHP version &gt;= 5.4.0</label>
+        </check>
+    </pre-install>
+    <pre-upgrade>
+        <check type="phpversion" predicate="ge" version="5.4.0">
+            <label lang="en">Check PHP version &gt;= 5.4.0</label>
+        </check>
+    </pre-upgrade>
+    <post-install>
+        <process command="programs/record_application FREEEVENT"/>
+        <process command="./wsh.php --api=importDocuments --file=./FREEEVENT/freeevent.ods"/>
+        <process command="programs/app_post FREEEVENT I"/>
+        <process command="programs/app_post FREEEVENT U"/>
+        <process command="programs/update_catalog"/>
+    </post-install>
 
-  <post-upgrade>
-    <process command="programs/pre_migration FREEEVENT" />
-    <process command="programs/record_application FREEEVENT" />
-    <process command="./wsh.php --api=importDocuments --file=./FREEEVENT/freeevent.ods" />
-    <process command="programs/app_post FREEEVENT U" />
-    <process command="programs/post_migration FREEEVENT" />
-    <process command="programs/update_catalog" />
-  </post-upgrade>
+    <post-upgrade>
+        <process command="programs/pre_migration FREEEVENT"/>
+        <process command="programs/record_application FREEEVENT"/>
+        <process command="./wsh.php --api=importDocuments --file=./FREEEVENT/freeevent.ods"/>
+        <process command="programs/app_post FREEEVENT U"/>
+        <process command="programs/post_migration FREEEVENT"/>
+        <process command="programs/update_catalog"/>
+    </post-upgrade>
 
 </module>
