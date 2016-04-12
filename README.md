@@ -1,9 +1,13 @@
-**FREEEVENT 3.0**
 
+# Dynacase FreeEvent
 
+## Description
 
+Process temporal events for dynacase families.
 
-# 1 -Introduction 
+## Documentation
+
+### 1 -Introduction 
 
 Le module FREEEVENT a pour objectif d'apporter un ensemble de
 fonctionnalités à Dynacase pour représenter les documents en fonction de
@@ -24,9 +28,9 @@ par des familles de document dites « productrices d'événements ».
 
 
 
-# 2 -Événements
+### 2 -Événements
 
-## 2.1.définition
+#### 2.1.définition
 
 Un événement est un document issu de la famille événement ou de ses héritiers.
 Il sert à réserver des ressources (humaines ou matérielles) dans un laps de
@@ -53,7 +57,7 @@ Il ne peut exister qu'un seul événement par document producteur et par méthod
 de transfert. Si l'événement associé à un producteur existe déjà avec la méthode
 de transfert utilisé alors il est modifié.
 
-## 2.2.ressource 
+#### 2.2.ressource 
 
 Les ressources peuvent être n'importe quel document marqué comme tel. Pour
 marquer un document comme ressource il suffit de lui assigner le marquage
@@ -85,7 +89,7 @@ UPDATE 2233
 
 </code>
 
-# 3 -Producteurs 
+### 3 -Producteurs 
 
 Les familles productrices sont celles qui sont capable d'engendrer des
 événements. La déclaration d'une famille productrice doit utiliser le trait
@@ -109,7 +113,7 @@ La famille productrice doit surcharger les méthodes pour remplir les attributs
 de l'événement et elle doit indiquer quand elle doit produire, modifier et
 supprimer cet événement (appel à ::setEvent(), ::deleteEvent() ).
 
-## 3.1.Événement atomique 
+#### 3.1.Événement atomique 
 
 Si la famille productrice a des attributs qui correspondent directement à des
 attributs de l'événement, elle peut utiliser les attributs suivants pour
@@ -181,7 +185,7 @@ class Absence extends \Dcp\Family\Document
 ```
 
 
-## 3.2.Événement répétable 
+#### 3.2.Événement répétable 
 
 Si une famille productrice doit générer des événements répétables elle doit donner tous les éléments de répétabilité à l'événement pour qu'il puisse se découper. Il faut au préalable créer une famille héritée d'événement qui doit contenir les attributs contenant les informations de répétabilité.
 
@@ -308,9 +312,9 @@ class DayMenu extends \Dcp\Family\Document
 ```
 
 
-# 4. Affichages temporels des événements 
+### 4. Affichages temporels des événements 
 
-## 4.1. Recherche d'événements 
+#### 4.1. Recherche d'événements 
  
 La recherche d'événements est basée sur la recherche détaillée. Cette recherche
 construit sa requête sur les critères tel que cela est fait avec la recherche
@@ -330,7 +334,7 @@ mélanger les deux vues pour ne pas avoir des critères contradictoires.
 
 Cette famille dispose d'une vue de consultation sous forme de *planning*.
 
-## 4.2. Dossier d'événements 
+#### 4.2. Dossier d'événements 
 
 Le dossier événement permet de rassembler des événements quelconques. La seule
 différence avec un dossier classique est qu'il possède une vue //planning//
@@ -338,7 +342,7 @@ comme la recherche d'événement. L'ajout ou la suppression d'événement dans c
 dossier ce fait comme pour un dossier classique. Le dossier événements ne peut
 contenir que des événements.
 
-# Migration depuis la version 2.8
+### Migration depuis la version 2.8
 
 Les fichiers *Méthode* , notamment le fichier `Method.PEvents.php` ne sont plus
 livrés par le module. Les producteurs d'événement doivent dorénavent utiliser le
@@ -357,3 +361,13 @@ doit être indiquée dans le contructeur de la classe de la famille.
 
 L'ancienne documentation pour la version 2.8 est accessible dans le fichier
 [README-2.8.md](README-2.8.md). 
+
+## Licence
+
+Merci de vous référer au fichier [LICENSE](LICENSE) pour connaitre les droits
+de modification et de distribution du module et de son code source.
+
+La licence s'applique à l'ensemble des codes source du module. 
+
+Elle prévaut sur toutes licences qui pourraient être mentionnées dans certains
+fichiers.
