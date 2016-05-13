@@ -4,12 +4,11 @@
  * @package FREEEVENT
 */
 
-function calvshorttext(&$action)
+function calvshorttext(Action & $action)
 {
     include_once ("FREEEVENT/calvresume.php");
-    $dbaccess = $action->GetParam("FREEDOM_DB");
-    $evi = GetHttpVars("ev", -1);
-    setHttpVar("ev", $evi);
+    $evi = getHttpVars("ev", -1);
+    SetHttpVar("ev", $evi);
     calvresume($action);
     return;
 }
