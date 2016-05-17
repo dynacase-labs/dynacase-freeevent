@@ -22,8 +22,6 @@ class Dcalendar extends \Dcp\Family\Dsearch
     public $defaultedit = "FREEEVENT:EDITCALENDAR";
     public $defaultview = "FREEEVENT:PLANNER";
     
-    public $xmlview = "FREEEVENT:XMLEVLIST";
-    
     function postCreated()
     {
         if ($this->getRawValue("SE_FAMID") == "") $this->setValue("SE_FAMID", getFamIdFromName($this->dbaccess, "EVENT"));
@@ -51,7 +49,7 @@ class Dcalendar extends \Dcp\Family\Dsearch
 
 
     
-    function ComputeQuery($keyword = "", $famid = - 1, $latest = "yes", $sensitive = false, $dirid = - 1, $subfolder = true)
+    function ComputeQuery($keyword = "", $famid = - 1, $latest = "yes", $sensitive = false, $dirid = - 1, $subfolder = true, $full = false)
     {
         if ($dirid > 0) {
             

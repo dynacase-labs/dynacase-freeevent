@@ -4,13 +4,11 @@
  * @package FREEEVENT
 */
 
-function calvlongtext(&$action)
+function calvlongtext(Action & $action)
 {
     include_once ("FREEEVENT/calvcard.php");
-    $dbaccess = $action->GetParam("FREEDOM_DB");
-    $evi = GetHttpVars("ev", -1);
-    setHttpVar("ev", $evi);
+    $evi = getHttpVars("ev", -1);
+    SetHttpVar("ev", $evi);
     calvcard($action);
     return;
 }
-
